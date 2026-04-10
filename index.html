@@ -8,16 +8,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:         #EDE3D8;
-      --surface:    #F5EDE0;
-      --card:       #FFFCF8;
-      --text:       #2C1A0E;
-      --text-mid:   #7A6450;
-      --text-light: #A89080;
-      --border:     #DDD0BE;
-      --shadow-sm:  0 2px 10px rgba(44,26,14,0.07);
-      --shadow:     0 4px 18px rgba(44,26,14,0.10);
-      --shadow-lg:  0 8px 32px rgba(44,26,14,0.14);
+      --bg:         #F2E8DB;
+      --surface:    #FAF4EC;
+      --card:       #FFFDF9;
+      --text:       #2A1A0E;
+      --text-mid:   #7A5E46;
+      --text-light: #B09880;
+      --border:     #E0CEBC;
+      --shadow-sm:  0 2px 10px rgba(42,26,14,0.07);
+      --shadow:     0 4px 18px rgba(42,26,14,0.10);
+      --shadow-lg:  0 10px 36px rgba(42,26,14,0.15);
+      --accent:     #C4623E;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,69 +27,77 @@
       font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* ── VIEWS ───────────────────────────────────── */
-    .view { min-height: 100vh; }
-    .view.hidden { display: none; }
-
-    /* ── WHEEL VIEW ──────────────────────────────── */
-    #wheelView {
+    /* ── APP LAYOUT ──────────────────────────────── */
+    .app {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2.5rem 1.5rem 2rem;
       min-height: 100vh;
     }
 
-    #wheelView header {
-      text-align: center;
-      margin-bottom: 1.5rem;
+    /* ── LEFT PANEL ──────────────────────────────── */
+    .left-panel {
+      width: 400px;
+      min-width: 340px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1.5rem 1.5rem;
+      border-right: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--surface);
     }
 
-    #wheelView h1 {
+    .left-panel header {
+      text-align: center;
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+
+    .left-panel h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      font-size: clamp(1.4rem, 2.5vw, 1.85rem);
       font-weight: 600;
       letter-spacing: -0.01em;
       color: var(--text);
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.25rem;
     }
 
     .subtitle {
-      font-size: 0.82rem;
+      font-size: 0.75rem;
       color: var(--text-light);
-      font-weight: 400;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.03em;
     }
 
-    .stats-inline {
+    .stats-row {
       display: flex;
-      gap: 1.25rem;
+      gap: 1rem;
       justify-content: center;
-      margin-top: 0.9rem;
-      font-size: 0.78rem;
+      margin-top: 0.65rem;
+      font-size: 0.75rem;
       color: var(--text-mid);
     }
 
-    .stats-inline b {
+    .stats-row b {
       font-family: 'Playfair Display', serif;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text);
-      font-weight: 600;
     }
 
     /* ── WHEEL ───────────────────────────────────── */
     #wheelWrap {
       position: relative;
       flex-shrink: 0;
+      margin: 0.5rem 0;
     }
 
     #wheelSvg {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       width: 100%; height: 100%;
       pointer-events: none;
       z-index: 1;
@@ -108,13 +117,12 @@
       text-align: center;
       border: 1px solid var(--border);
       z-index: 3;
-      cursor: default;
     }
 
-    #centerTodo {
+    #centerNum {
       font-family: 'Playfair Display', serif;
       font-weight: 600;
-      color: var(--text);
+      color: var(--accent);
       line-height: 1;
     }
 
@@ -124,7 +132,7 @@
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-top: 0.2rem;
+      margin-top: 0.15rem;
     }
 
     .wheel-node {
@@ -132,53 +140,57 @@
       transform: translate(-50%, -50%);
       border-radius: 50%;
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       box-shadow: var(--shadow-sm);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
       text-align: center;
       z-index: 2;
-      border-top: 3px solid var(--node-color, var(--border));
+      border-top-width: 3px;
     }
 
     .wheel-node:hover {
-      transform: translate(-50%, -50%) scale(1.1);
+      transform: translate(-50%, -50%) scale(1.12);
+      box-shadow: var(--shadow);
+    }
+
+    .wheel-node.active {
+      transform: translate(-50%, -50%) scale(1.08);
       box-shadow: var(--shadow-lg);
     }
 
     .node-name {
-      font-size: 0.62rem;
       font-weight: 600;
       color: var(--text-mid);
-      line-height: 1.3;
+      line-height: 1.25;
       text-align: center;
+      padding: 0 4px;
     }
 
-    /* ── WHEEL FOOTER ────────────────────────────── */
-    #wheelFooter {
-      margin-top: 1.75rem;
+    /* ── LEFT FOOTER ─────────────────────────────── */
+    .left-footer {
       display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      margin-top: auto;
+      padding-top: 0.75rem;
     }
 
+    /* ── BUTTONS ─────────────────────────────────── */
     .ghost-btn {
       background: transparent;
-      border: 1px solid var(--border);
-      padding: 0.5rem 1.2rem;
+      border: 1.5px solid var(--border);
+      padding: 0.48rem 1.1rem;
       border-radius: 50px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 500;
+      font-size: 0.8rem; font-weight: 500;
       color: var(--text-mid);
       cursor: pointer;
       transition: all 0.18s;
+      white-space: nowrap;
     }
 
     .ghost-btn:hover {
@@ -188,106 +200,124 @@
     }
 
     .solid-btn {
-      background: var(--text);
-      border: 1px solid var(--text);
-      padding: 0.5rem 1.2rem;
+      background: var(--accent);
+      border: none;
+      padding: 0.48rem 1.1rem;
       border-radius: 50px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--surface);
+      font-size: 0.8rem; font-weight: 600;
+      color: white;
       cursor: pointer;
-      transition: opacity 0.18s;
+      transition: opacity 0.18s, transform 0.18s;
+      white-space: nowrap;
     }
 
-    .solid-btn:hover { opacity: 0.82; }
+    .solid-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── RIGHT PANEL ─────────────────────────────── */
+    .right-panel {
+      flex: 1;
+      min-width: 0;
+      overflow-y: auto;
+      height: 100vh;
+      padding: 2.5rem 2.5rem 4rem;
+    }
+
+    /* ── PLACEHOLDER ─────────────────────────────── */
+    #placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 60vh;
+      text-align: center;
+      color: var(--text-light);
+    }
+
+    .placeholder-deco {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--border);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0.5;
+    }
+
+    #placeholder p {
+      font-size: 0.9rem;
+      font-style: italic;
+      max-width: 220px;
+      line-height: 1.6;
+    }
 
     /* ── CATEGORY VIEW ───────────────────────────── */
-    #catView {
-      max-width: 660px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 5rem;
-    }
+    #catView { display: none; }
+    #catView.visible { display: block; }
 
     #catHeader {
       display: flex;
       align-items: flex-start;
+      justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.5rem;
     }
-
-    .back-btn {
-      background: none; border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.8rem; font-weight: 500;
-      color: var(--text-light);
-      cursor: pointer;
-      padding: 0.25rem 0;
-      transition: color 0.18s;
-      white-space: nowrap;
-      margin-top: 0.35rem;
-    }
-
-    .back-btn:hover { color: var(--text); }
-
-    #catMeta { flex: 1; }
 
     #catTitle {
       font-family: 'Playfair Display', serif;
-      font-size: 1.75rem;
+      font-size: 2rem;
       font-weight: 600;
       color: var(--text);
+      line-height: 1.1;
     }
 
     #catSubtitle {
       font-size: 0.78rem;
       color: var(--text-light);
-      margin-top: 0.15rem;
+      margin-top: 0.2rem;
     }
 
-    /* ── CAT FILTERS ─────────────────────────────── */
+    /* ── FILTERS ─────────────────────────────────── */
     #catFilters {
       display: flex;
       gap: 0.4rem;
-      margin-bottom: 0.25rem;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.5rem;
       padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
     }
 
     .cf-pill {
-      padding: 0.3rem 0.8rem;
+      padding: 0.28rem 0.8rem;
       border-radius: 50px;
-      border: 1px solid transparent;
+      border: 1.5px solid transparent;
       font-family: 'Inter', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 500;
+      font-size: 0.76rem; font-weight: 500;
       cursor: pointer;
       background: transparent;
       color: var(--text-light);
-      transition: all 0.18s;
+      transition: all 0.15s;
     }
 
     .cf-pill:hover { color: var(--text); }
 
     .cf-pill.active {
-      background: var(--text);
-      color: var(--surface);
-      border-color: var(--text);
+      border-color: var(--node-color, var(--accent));
+      color: var(--node-color, var(--accent));
     }
 
     /* ── ACTIVITY LIST ───────────────────────────── */
     .activity-row {
       display: flex;
       align-items: flex-start;
-      gap: 0.9rem;
-      padding: 1rem 0;
+      gap: 0.85rem;
+      padding: 0.9rem 0;
       border-bottom: 1px solid var(--border);
-      animation: rowIn 0.22s ease backwards;
+      animation: rowIn 0.2s ease backwards;
     }
 
     @keyframes rowIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateX(-6px); }
+      to   { opacity: 1; transform: translateX(0); }
     }
 
     .activity-row:last-child { border-bottom: none; }
@@ -297,9 +327,9 @@
       border-radius: 50%;
       border: 1.5px solid var(--node-color, var(--border));
       flex-shrink: 0;
-      margin-top: 4px;
+      margin-top: 3px;
       cursor: pointer;
-      transition: all 0.18s;
+      transition: all 0.15s;
     }
 
     .activity-row.done .status-dot {
@@ -307,16 +337,14 @@
       border-color: var(--node-color);
     }
 
-    .status-dot:hover { transform: scale(1.25); }
+    .status-dot:hover { transform: scale(1.2); }
 
     .activity-body { flex: 1; min-width: 0; }
 
     .activity-title {
-      font-size: 0.92rem;
-      font-weight: 500;
+      font-size: 0.9rem; font-weight: 500;
       color: var(--text);
-      cursor: pointer;
-      transition: color 0.18s;
+      cursor: pointer; transition: color 0.15s;
       line-height: 1.45;
     }
 
@@ -325,14 +353,13 @@
       color: var(--text-light);
     }
 
-    .activity-title:hover { color: var(--node-color, var(--text-mid)); }
+    .activity-title:hover { color: var(--node-color, var(--accent)); }
 
     .activity-notes {
-      font-size: 0.78rem;
+      font-size: 0.77rem;
       color: var(--text-light);
-      margin-top: 0.2rem;
+      margin-top: 0.18rem;
       line-height: 1.6;
-      font-weight: 400;
     }
 
     .activity-link {
@@ -343,42 +370,28 @@
       display: inline-flex;
       align-items: center;
       gap: 0.15rem;
-      margin-top: 0.25rem;
+      margin-top: 0.2rem;
     }
 
     .activity-link:hover { text-decoration: underline; }
 
     .activity-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-top: 0.35rem;
+      display: flex; align-items: center;
+      gap: 0.55rem; margin-top: 0.3rem;
     }
 
-    .activity-date {
-      font-size: 0.7rem;
-      color: var(--text-light);
-    }
+    .activity-date { font-size: 0.7rem; color: var(--text-light); }
 
     .stars-row { display: flex; gap: 1px; }
 
-    .star {
-      font-size: 0.82rem;
-      color: #D8C8B8;
-      cursor: pointer;
-      transition: all 0.1s;
-    }
-
-    .star.lit { color: #C49A5A; }
-    .star:hover { transform: scale(1.2); color: #C49A5A; }
+    .star { font-size: 0.82rem; color: #D8C4AE; cursor: pointer; transition: all 0.1s; }
+    .star.lit { color: #D4943A; }
+    .star:hover { transform: scale(1.2); color: #D4943A; }
 
     .activity-actions {
-      display: flex;
-      gap: 0.2rem;
-      opacity: 0;
-      transition: opacity 0.15s;
-      flex-shrink: 0;
-      padding-top: 2px;
+      display: flex; gap: 0.2rem;
+      opacity: 0; transition: opacity 0.15s;
+      flex-shrink: 0; padding-top: 1px;
     }
 
     .activity-row:hover .activity-actions { opacity: 1; }
@@ -389,15 +402,14 @@
       background: none; cursor: pointer;
       font-size: 0.72rem;
       display: flex; align-items: center; justify-content: center;
-      color: var(--text-light);
-      transition: all 0.15s;
+      color: var(--text-light); transition: all 0.15s;
     }
 
     .row-btn:hover { background: var(--border); color: var(--text); }
-    .row-btn.del:hover { background: #EDD8D0; color: #A85C4A; }
+    .row-btn.del:hover { background: #F0DDD8; color: #A84A3A; }
 
     .empty-row {
-      padding: 3rem 0;
+      padding: 2.5rem 0;
       text-align: center;
       font-size: 0.85rem;
       color: var(--text-light);
@@ -407,12 +419,12 @@
     /* ── MODALS ──────────────────────────────────── */
     .overlay {
       position: fixed; inset: 0;
-      background: rgba(44,26,14,0.22);
+      background: rgba(42,26,14,0.22);
       backdrop-filter: blur(6px);
-      z-index: 200;
+      z-index: 300;
       display: flex; align-items: center; justify-content: center;
       padding: 1.5rem;
-      animation: fadeIn 0.18s ease;
+      animation: fadeIn 0.16s ease;
     }
 
     .overlay.hidden { display: none; }
@@ -424,54 +436,47 @@
       padding: 1.75rem;
       width: 100%; max-width: 440px;
       max-height: 92vh; overflow-y: auto;
-      animation: modalPop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: modalPop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--border);
     }
 
     @keyframes modalPop {
-      from { opacity: 0; transform: scale(0.92) translateY(12px); }
+      from { opacity: 0; transform: scale(0.92) translateY(10px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .modal-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1.35rem;
-      font-weight: 600;
-      margin-bottom: 1.35rem;
-      color: var(--text);
+      font-size: 1.35rem; font-weight: 600;
+      margin-bottom: 1.3rem; color: var(--text);
     }
 
-    .form-group { margin-bottom: 1rem; }
+    .form-group { margin-bottom: 0.95rem; }
 
     .form-group label {
       display: block;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--text-light);
-      margin-bottom: 0.3rem;
+      font-size: 0.7rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: var(--text-light); margin-bottom: 0.3rem;
     }
 
     .form-group input,
     .form-group textarea {
       width: 100%;
       padding: 0.58rem 0.85rem;
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       border-radius: 8px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.88rem; font-weight: 400;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.18s;
+      font-size: 0.88rem; color: var(--text);
+      outline: none; transition: border-color 0.15s;
       background: var(--surface);
     }
 
     .form-group input:focus,
-    .form-group textarea:focus { border-color: var(--text-mid); }
+    .form-group textarea:focus { border-color: var(--accent); }
 
-    .form-group textarea { resize: vertical; min-height: 72px; }
+    .form-group textarea { resize: vertical; min-height: 70px; }
 
     .cat-grid {
       display: grid;
@@ -482,29 +487,25 @@
     .cat-opt {
       padding: 0.45rem 0.2rem;
       border-radius: 7px;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.15s;
+      border: 1.5px solid var(--border);
+      cursor: pointer; transition: all 0.15s;
       text-align: center;
-      font-size: 0.65rem;
-      font-weight: 500;
-      color: var(--text-mid);
-      background: var(--surface);
-      line-height: 1.3;
+      font-size: 0.65rem; font-weight: 500;
+      color: var(--text-mid); background: var(--surface);
     }
 
     .cat-opt:hover { border-color: var(--text-mid); }
     .cat-opt.sel { color: white; border-color: transparent; }
 
-    .modal-btns { display: flex; gap: 0.6rem; margin-top: 1.35rem; }
+    .modal-btns { display: flex; gap: 0.6rem; margin-top: 1.3rem; }
 
     .btn-cancel {
       flex: 1; padding: 0.52rem 1rem;
-      border-radius: 50px; border: 1px solid var(--border);
+      border-radius: 50px; border: 1.5px solid var(--border);
       font-family: 'Inter', sans-serif;
-      font-weight: 500; font-size: 0.85rem;
-      cursor: pointer; transition: all 0.18s;
-      background: transparent; color: var(--text-mid);
+      font-weight: 500; font-size: 0.84rem;
+      cursor: pointer; background: transparent; color: var(--text-mid);
+      transition: all 0.15s;
     }
 
     .btn-cancel:hover { background: var(--border); }
@@ -513,52 +514,40 @@
       flex: 2; padding: 0.52rem 1.2rem;
       border-radius: 50px; border: none;
       font-family: 'Inter', sans-serif;
-      font-weight: 600; font-size: 0.85rem;
-      cursor: pointer; transition: opacity 0.18s;
-      background: var(--text); color: var(--surface);
+      font-weight: 600; font-size: 0.84rem;
+      cursor: pointer; transition: opacity 0.15s;
+      background: var(--accent); color: white;
     }
 
-    .btn-save:hover { opacity: 0.82; }
+    .btn-save:hover { opacity: 0.86; }
 
     /* ── SURPRISE MODAL ──────────────────────────── */
-    .surprise-overlay .modal {
-      max-width: 340px;
-      text-align: center;
-    }
+    .surprise-overlay .modal { max-width: 340px; text-align: center; }
 
     .s-eyebrow {
-      font-size: 0.68rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-light);
-      margin-bottom: 0.4rem;
+      font-size: 0.68rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-light); margin-bottom: 0.5rem;
     }
 
     .s-cat {
       display: inline-block;
       font-size: 0.7rem; font-weight: 600;
-      padding: 0.22rem 0.7rem;
-      border-radius: 50px;
-      color: white;
-      margin-bottom: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      padding: 0.22rem 0.75rem; border-radius: 50px;
+      color: white; margin-bottom: 0.65rem;
+      text-transform: uppercase; letter-spacing: 0.06em;
     }
 
     .s-title {
       font-family: 'Playfair Display', serif;
       font-size: 1.4rem; font-weight: 600;
-      margin-bottom: 0.5rem;
-      line-height: 1.35;
+      margin-bottom: 0.5rem; line-height: 1.3;
       color: var(--text);
     }
 
     .s-notes {
-      font-size: 0.82rem;
-      color: var(--text-light);
-      line-height: 1.6;
-      margin-bottom: 1.25rem;
+      font-size: 0.82rem; color: var(--text-light);
+      line-height: 1.6; margin-bottom: 1.2rem;
     }
 
     .surprise-overlay .modal-btns { flex-direction: column; }
@@ -576,57 +565,94 @@
 
     @keyframes cfFall {
       0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-      85%  { opacity: 0.7; }
+      85%  { opacity: 0.8; }
       100% { transform: translateY(105vh) rotate(700deg); opacity: 0; }
     }
 
     /* ── SCROLLBAR ───────────────────────────────── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ── MOBILE ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      .app { flex-direction: column; }
+
+      .left-panel {
+        width: 100%;
+        min-width: unset;
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 1.5rem;
+      }
+
+      .right-panel { height: auto; padding: 1.5rem 1.25rem 3rem; }
+      #placeholder { min-height: 30vh; }
+    }
   </style>
 </head>
 <body>
   <div id="confetti-layer"></div>
 
-  <!-- ── WHEEL VIEW ────────────────────────────────── -->
-  <div id="wheelView" class="view">
-    <header>
-      <h1>our nyc adventure log</h1>
-      <p class="subtitle">things we want to do &nbsp;·&nbsp; places to go &nbsp;·&nbsp; memories to make</p>
-      <div class="stats-inline" id="statsInline"></div>
-    </header>
-    <div id="wheelWrap">
-      <svg id="wheelSvg"></svg>
-      <div id="wheelCenter">
-        <div id="centerTodo"></div>
-        <div id="centerLabel">to do</div>
+  <div class="app">
+
+    <!-- ── LEFT PANEL ──────────────────────────────── -->
+    <div class="left-panel">
+      <header>
+        <h1>our nyc adventure log</h1>
+        <p class="subtitle">things we want to do &nbsp;·&nbsp; places to go</p>
+        <div class="stats-row" id="statsRow"></div>
+      </header>
+
+      <div id="wheelWrap">
+        <svg id="wheelSvg"></svg>
+        <div id="wheelCenter">
+          <div id="centerNum"></div>
+          <div id="centerLabel">done</div>
+        </div>
+      </div>
+
+      <div class="left-footer">
+        <button class="ghost-btn" style="flex:1" onclick="surpriseMe()">pick one for us</button>
+        <button class="solid-btn" style="flex:1" onclick="openAdd(null)">+ add</button>
       </div>
     </div>
-    <div id="wheelFooter">
-      <button class="ghost-btn" onclick="surpriseMe()">pick one for us</button>
-      <button class="solid-btn" onclick="openAdd(null)">add adventure</button>
+
+    <!-- ── RIGHT PANEL ─────────────────────────────── -->
+    <div class="right-panel">
+
+      <!-- placeholder -->
+      <div id="placeholder">
+        <div class="placeholder-deco">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          </svg>
+        </div>
+        <p>Select a category from the wheel to explore your adventures</p>
+      </div>
+
+      <!-- category view -->
+      <div id="catView">
+        <div id="catHeader">
+          <div>
+            <div id="catTitle"></div>
+            <div id="catSubtitle"></div>
+          </div>
+          <button class="ghost-btn" onclick="openAdd(currentCat)">+ add</button>
+        </div>
+        <div id="catFilters">
+          <button class="cf-pill active" data-cf="all">All</button>
+          <button class="cf-pill" data-cf="todo">To do</button>
+          <button class="cf-pill" data-cf="done">Done</button>
+        </div>
+        <div id="activityList"></div>
+      </div>
+
     </div>
   </div>
 
-  <!-- ── CATEGORY VIEW ─────────────────────────────── -->
-  <div id="catView" class="view hidden">
-    <div id="catHeader">
-      <button class="back-btn" onclick="showWheel()">&#8592; all categories</button>
-      <div id="catMeta">
-        <h2 id="catTitle"></h2>
-        <div id="catSubtitle"></div>
-      </div>
-      <button class="ghost-btn" onclick="openAdd(currentCat)" style="font-size:0.78rem; padding:0.4rem 0.9rem; flex-shrink:0;">+ add</button>
-    </div>
-    <div id="catFilters">
-      <button class="cf-pill active" data-cf="all">All</button>
-      <button class="cf-pill" data-cf="todo">To do</button>
-      <button class="cf-pill" data-cf="done">Done</button>
-    </div>
-    <div id="activityList"></div>
-  </div>
-
-  <!-- ── FORM MODAL ────────────────────────────────── -->
+  <!-- ── FORM MODAL ──────────────────────────────── -->
   <div class="overlay hidden" id="formOverlay">
     <div class="modal">
       <div class="modal-title" id="formTitle">New Adventure</div>
@@ -653,7 +679,7 @@
     </div>
   </div>
 
-  <!-- ── SURPRISE MODAL ────────────────────────────── -->
+  <!-- ── SURPRISE MODAL ──────────────────────────── -->
   <div class="overlay hidden surprise-overlay" id="surpriseOverlay">
     <div class="modal">
       <div class="s-eyebrow">tonight, let's...</div>
@@ -661,7 +687,7 @@
       <div class="s-title" id="sTitle"></div>
       <div class="s-notes" id="sNotes"></div>
       <div class="modal-btns">
-        <button class="solid-btn" onclick="surpriseMe()" style="border-radius:50px; padding:0.52rem;">pick again</button>
+        <button class="solid-btn" onclick="surpriseMe()" style="border-radius:50px; padding:0.52rem; width:100%;">pick again</button>
         <button class="btn-cancel" onclick="closeModal('surpriseOverlay')">close</button>
       </div>
     </div>
@@ -670,42 +696,80 @@
   <script>
   // ── CATEGORIES ──────────────────────────────────
   const CATS = {
-    cinema:   { label: 'Cinema',   color: '#B5714A' },
-    food:     { label: 'Food',     color: '#A85C4A' },
-    bakery:   { label: 'Bakeries', color: '#C4906A' },
-    arts:     { label: 'Arts',     color: '#7A6E9E' },
-    shows:    { label: 'Shows',    color: '#9E6E8A' },
-    explore:  { label: 'Explore',  color: '#5E8C6A' },
-    wellness: { label: 'Wellness', color: '#C49A5A' },
-    daytrip:  { label: 'Day Trip', color: '#5E8EA0' },
-    free:     { label: 'Free',     color: '#8A9E5A' },
-    classes:  { label: 'Classes',  color: '#5E7A9E' },
+    cinema:   { label: 'Cinema',   color: '#D4703A' },
+    food:     { label: 'Food',     color: '#C44A3A' },
+    bakery:   { label: 'Bakeries', color: '#D4855A' },
+    arts:     { label: 'Arts',     color: '#8B6AAE' },
+    shows:    { label: 'Shows',    color: '#B55A8A' },
+    explore:  { label: 'Explore',  color: '#4A9E6A' },
+    wellness: { label: 'Wellness', color: '#D4A046' },
+    daytrip:  { label: 'Day Trip', color: '#4A8EAA' },
+    free:     { label: 'Free',     color: '#7A9E4A' },
+    classes:  { label: 'Classes',  color: '#4A6EAE' },
   };
 
-  // ── SEED DATA ────────────────────────────────────
+  // ── DATA ─────────────────────────────────────────
   const SEED = [
-    { id:1,  title:'Catch a film at an indie theater',          category:'cinema',   notes:'Check Screenslate.com for the best screenings & showtimes.',                             link:'https://www.screenslate.com' },
+    // cinema
+    { id:1,  title:'Catch a film at an indie theater',          category:'cinema',   notes:'Check Screenslate.com for the best screenings & showtimes around the city.',             link:'https://www.screenslate.com' },
     { id:2,  title:'Movie night at Metrograph',                 category:'cinema',   notes:'Cozy theater on Ludlow St with great programming, a bar, and a little restaurant.',      link:'' },
     { id:3,  title:'IFC Center double feature',                 category:'cinema',   notes:'Village staple — always something interesting on. Stay for two.',                         link:'' },
-    { id:4,  title:'Eat at Din Tai Fung',                       category:'food',     notes:'Soup dumplings are life. Go on a weekday to avoid the worst of the wait.',               link:'' },
-    { id:5,  title:'Endless pasta night at Olive Garden',       category:'food',     notes:'Soup + salad + endless pasta. Treat yourselves, ironically or not.',                     link:'' },
-    { id:6,  title:'Find a new local restaurant together',      category:'food',     notes:'Pick somewhere neither of us has been — browse Eater NY for ideas.',                     link:'https://ny.eater.com' },
-    { id:7,  title:'Try a new bakery',                          category:'bakery',   notes:'Bien Cuit, Mah Ze Dahr, Patisserie Chanson, Supermoon Bakehouse...',                     link:'' },
-    { id:8,  title:'Saturday morning pastry crawl',             category:'bakery',   notes:'Pick a neighborhood and hit 2–3 bakeries in a row.',                                     link:'' },
-    { id:9,  title:'See a Broadway show',                       category:'shows',    notes:'Check TKTS for same-day discounts, or splurge on something we really want to see.',      link:'https://www.tdf.org/nyc/7/TKTS-ticket-booths' },
-    { id:10, title:'Catch a live music show',                   category:'arts',     notes:"Baby's All Right, Music Hall of Williamsburg, Elsewhere — check Resident Advisor.",      link:'https://ra.co/events/us/newyork' },
-    { id:11, title:'Visit a gallery or art exhibition',         category:'arts',     notes:'New Museum, MoMA PS1, The Shed, or walk around Chelsea galleries on a Saturday.',        link:'' },
-    { id:12, title:'Explore a new neighborhood',                category:'explore',  notes:'Flushing, Ridgewood, Greenwood Heights, Kingsbridge, Rockaway Beach...',                 link:'' },
-    { id:13, title:'Wander around Governors Island',            category:'explore',  notes:'Free ferry on weekends. Rent bikes and just explore — picnic vibes.',                    link:'' },
-    { id:14, title:'Bathhouse day',                             category:'wellness', notes:'Russian & Turkish Baths in East Village or Aire Ancient Baths in Tribeca.',              link:'' },
-    { id:15, title:'Couples massage',                           category:'wellness', notes:'No special occasion needed. Just do it.',                                                 link:'' },
-    { id:16, title:'Impromptu train to upstate NY',             category:'daytrip',  notes:'Hudson or Beacon — hop on Metro-North with no plan. A gallery, or just walking.',        link:'' },
-    { id:17, title:'Day trip to Connecticut',                   category:'daytrip',  notes:"New Haven for Sally's Apizza? Or a coastal town like Mystic or Essex.",                  link:'' },
-    { id:18, title:'Free museum day',                           category:'free',     notes:'MoMA is free Fri 5–9pm. Brooklyn Museum first Saturday of the month.',                   link:'' },
-    { id:19, title:'Catch a free outdoor event',                category:'free',     notes:'Bryant Park movies, Shakespeare in the Park, SummerStage, Celebrate Brooklyn!',          link:'' },
-    { id:20, title:'Sneak into a hotel rooftop bar',            category:'free',     notes:'Walk in with confidence. Williamsburg Hotel, 1 Hotels, Pod 39...',                       link:'' },
-    { id:21, title:'Take a drawing class together',             category:'classes',  notes:'Look for a drop-in session — relaxed and fun, not too serious.',                         link:'' },
-    { id:22, title:'Learn ASL together',                        category:'classes',  notes:'Find a beginner workshop or evening class.',                                              link:'' },
+    { id:4,  title:'Nitehawk Cinema',                           category:'cinema',   notes:'Dine-in theater in Williamsburg — order food and drinks during the movie.',               link:'' },
+    { id:5,  title:'Anthology Film Archives',                   category:'cinema',   notes:'Avant-garde and experimental cinema in the East Village. Truly offbeat programming.',    link:'' },
+    { id:6,  title:'BAM Rose Cinemas',                          category:'cinema',   notes:'Brooklyn Academy of Music — thoughtful programming, beautiful old building.',            link:'' },
+    // food
+    { id:7,  title:'Eat at Din Tai Fung',                       category:'food',     notes:'Soup dumplings are life. Go on a weekday to avoid the worst of the wait.',               link:'' },
+    { id:8,  title:'Endless pasta night at Olive Garden',       category:'food',     notes:'Soup + salad + endless pasta. Treat yourselves, ironically or not.',                     link:'' },
+    { id:9,  title:'Find a new local restaurant together',      category:'food',     notes:'Pick somewhere neither of us has been — browse Eater NY for ideas.',                     link:'https://ny.eater.com' },
+    { id:10, title:'Peter Luger Steak House',                   category:'food',     notes:'Cash only. The porterhouse. Worth every penny and every minute of the wait.',            link:'' },
+    { id:11, title:'Lilia in Williamsburg',                     category:'food',     notes:'The pasta is incredible. Hard to get a reservation — use Resy and be persistent.',       link:'' },
+    { id:12, title:"Xi'an Famous Foods",                        category:'food',     notes:'Spicy cumin lamb hand-pulled noodles. One of the best bites in NYC.',                    link:'' },
+    { id:13, title:"Russ & Daughters Cafe",                     category:'food',     notes:'Classic NYC Jewish deli on Houston. Get the Classic board and a Dr. Brown.',             link:'' },
+    // bakery
+    { id:14, title:'Try a new bakery',                          category:'bakery',   notes:'Bien Cuit, Mah Ze Dahr, Patisserie Chanson, Supermoon Bakehouse...',                     link:'' },
+    { id:15, title:'Saturday morning pastry crawl',             category:'bakery',   notes:'Pick a neighborhood and hit 2–3 bakeries in a row.',                                     link:'' },
+    { id:16, title:'Breads Bakery for the chocolate babka',     category:'bakery',   notes:'Union Square location. Get there early — it sells out. Best babka in the city.',         link:'' },
+    { id:17, title:'Dominique Ansel Bakery',                    category:'bakery',   notes:'SoHo institution. Whatever seasonal thing they have will be worth it.',                  link:'' },
+    { id:18, title:'Balthazar Bakery',                          category:'bakery',   notes:'Get a baguette or croissant and wander around SoHo. Very Parisian of you.',              link:'' },
+    // shows
+    { id:19, title:'See a Broadway show',                       category:'shows',    notes:'Check TKTS for same-day discounts, or splurge on something we really want to see.',      link:'https://www.tdf.org/nyc/7/TKTS-ticket-booths' },
+    { id:20, title:'Catch an off-Broadway show',                category:'shows',    notes:'Playwrights Horizons, Atlantic Theater Company, Signature — often more adventurous.',    link:'' },
+    { id:21, title:'Comedy night at The Comedy Cellar',         category:'shows',    notes:'MacDougal St institution. Famous for surprise drop-ins. Go on a weeknight.',             link:'' },
+    { id:22, title:'Jazz at Village Vanguard',                  category:'shows',    notes:'Legendary West Village jazz club. Go for a late set and just sink in.',                  link:'' },
+    // arts
+    { id:23, title:'Catch a live music show',                   category:'arts',     notes:"Baby's All Right, Music Hall of Williamsburg, Elsewhere — check Resident Advisor.",      link:'https://ra.co/events/us/newyork' },
+    { id:24, title:'Visit a gallery or art exhibition',         category:'arts',     notes:'New Museum, MoMA PS1, The Shed, or walk around Chelsea galleries on a Saturday.',        link:'' },
+    { id:25, title:'Spend a day at The Met',                    category:'arts',     notes:'Pay what you wish for NY residents. So big you could go 10 times and find something new.', link:'' },
+    { id:26, title:'Visit the Whitney Museum',                  category:'arts',     notes:'American art with incredible views of the Hudson. Great rotating exhibitions.',          link:'' },
+    { id:27, title:'Open mic at Nuyorican Poets Cafe',          category:'arts',     notes:'East Village legend. Friday slam nights are electric — no two are the same.',            link:'' },
+    // explore
+    { id:28, title:'Explore a new neighborhood',                category:'explore',  notes:'Flushing, Ridgewood, Greenwood Heights, Kingsbridge, Rockaway Beach...',                 link:'' },
+    { id:29, title:'Wander around Governors Island',            category:'explore',  notes:'Free ferry on weekends. Rent bikes and explore — bring a picnic.',                       link:'' },
+    { id:30, title:'Walk the High Line end to end',             category:'explore',  notes:'Start at 34th St and walk all the way down. Stop for food in the Meatpacking District.', link:'' },
+    { id:31, title:'Spend a day in DUMBO',                      category:'explore',  notes:'Walk the bridge, explore the cobblestone streets, grab food, watch the skyline.',        link:'' },
+    { id:32, title:'Visit the Cloisters',                       category:'explore',  notes:'Medieval art museum perched above the Hudson in Washington Heights. Otherworldly.',       link:'' },
+    // wellness
+    { id:33, title:'Bathhouse day',                             category:'wellness', notes:'Russian & Turkish Baths in East Village or Aire Ancient Baths in Tribeca.',              link:'' },
+    { id:34, title:'Couples massage',                           category:'wellness', notes:'No special occasion needed. Just do it.',                                                 link:'' },
+    { id:35, title:'Sound bath meditation',                     category:'wellness', notes:'MNDFL, Inscape, or local yoga studios often host them. Very calming and a little weird.', link:'' },
+    { id:36, title:'Float therapy',                             category:'wellness', notes:'Sensory deprivation tank at Lift/Next Float — sounds intense, incredibly relaxing.',      link:'' },
+    // daytrip
+    { id:37, title:'Impromptu train to upstate NY',             category:'daytrip',  notes:'Hudson or Beacon — hop on Metro-North with no plan. A gallery, or just walking.',        link:'' },
+    { id:38, title:'Day trip to Connecticut',                   category:'daytrip',  notes:"New Haven for Sally's Apizza? Or a coastal town like Mystic or Essex.",                  link:'' },
+    { id:39, title:'Catskills for a day hike',                  category:'daytrip',  notes:'Rent a Zipcar. Slide Mountain or Kaaterskill Falls — beautiful and not too hard.',       link:'' },
+    { id:40, title:'Asbury Park, NJ',                           category:'daytrip',  notes:'NJ Transit from Penn Station. Great food scene, music venues, and a fun boardwalk.',     link:'' },
+    // free
+    { id:41, title:'Free museum day',                           category:'free',     notes:'MoMA is free Fri 5–9pm. Brooklyn Museum first Saturday of the month.',                   link:'' },
+    { id:42, title:'Catch a free outdoor event',                category:'free',     notes:'Bryant Park movies, Shakespeare in the Park, SummerStage, Celebrate Brooklyn!',          link:'' },
+    { id:43, title:'Sneak into a hotel rooftop bar',            category:'free',     notes:'Walk in with confidence. Williamsburg Hotel, 1 Hotels, Pod 39...',                       link:'' },
+    { id:44, title:'Picnic in Prospect Park',                   category:'free',     notes:'Grab stuff from a nearby deli or bakery, find a good spot, do absolutely nothing.',      link:'' },
+    { id:45, title:'Brooklyn Botanic Garden',                   category:'free',     notes:'Free on select weekdays. Cherry blossom season in April is genuinely magical.',          link:'' },
+    { id:46, title:'Visit the Panorama of NYC at Queens Museum', category:'free',    notes:'A 1:1200 scale model of the entire city. Surprisingly fascinating.',                     link:'' },
+    // classes
+    { id:47, title:'Take a drawing class together',             category:'classes',  notes:'Look for a drop-in session — relaxed and fun, not too serious.',                         link:'' },
+    { id:48, title:'Learn ASL together',                        category:'classes',  notes:'Find a beginner workshop or evening class.',                                              link:'' },
+    { id:49, title:'Pottery or ceramics class',                 category:'classes',  notes:'Lots of studios in Brooklyn offer beginner classes. Ghost optional.',                    link:'' },
+    { id:50, title:'Take a dance class',                        category:'classes',  notes:'Salsa, swing, or something totally random. Neither of us needs to be good at it.',        link:'' },
   ];
 
   // ── STATE ────────────────────────────────────────
@@ -714,7 +778,7 @@
   let catFilter  = 'all';
   let editingId  = null;
   let pickedCat  = 'food';
-  const KEY = 'nyc-adv-v2';
+  const KEY = 'nyc-adv-v3';
 
   function load() {
     const raw = localStorage.getItem(KEY);
@@ -725,53 +789,40 @@
   function save() { localStorage.setItem(KEY, JSON.stringify(items)); }
 
   // ── WHEEL ────────────────────────────────────────
-  function showWheel() {
-    currentCat = null;
-    document.getElementById('catView').classList.add('hidden');
-    document.getElementById('wheelView').classList.remove('hidden');
-    requestAnimationFrame(renderWheel);
-  }
-
   function renderWheel() {
-    const todo  = items.filter(a => a.status === 'todo').length;
     const done  = items.filter(a => a.status === 'done').length;
+    const todo  = items.filter(a => a.status === 'todo').length;
     const total = items.length;
 
-    document.getElementById('centerTodo').textContent = done;
-    document.getElementById('centerLabel').textContent = done === 1 ? 'adventure done' : 'adventures done';
-    document.getElementById('statsInline').innerHTML  =
+    document.getElementById('centerNum').textContent = done;
+    document.getElementById('statsRow').innerHTML =
       `<span><b>${total}</b> total</span>
        <span><b>${done}</b> done</span>
        <span><b>${todo}</b> to go</span>`;
 
+    const leftPanel = document.querySelector('.left-panel');
+    const pw = leftPanel.offsetWidth;
+    const ph = leftPanel.offsetHeight;
+    const size = Math.min(pw - 48, ph * 0.52, 340);
+
     const wrap = document.getElementById('wheelWrap');
-    const size = Math.min(
-      window.innerWidth  * 0.88,
-      window.innerHeight * 0.56,
-      500
-    );
     wrap.style.width  = size + 'px';
     wrap.style.height = size + 'px';
 
-    // Clear old nodes
     wrap.querySelectorAll('.wheel-node').forEach(n => n.remove());
 
-    const W  = size, H = size;
-    const cx = W / 2, cy = H / 2;
-    const r  = W * 0.37;
-
-    const centerSize   = W * 0.23;
-    const nodeSize     = W * 0.165;
-    const nodeFontSize = nodeSize * 0.28;
-    const countSize    = nodeSize * 0.42;
+    const cx = size / 2, cy = size / 2;
+    const r  = size * 0.375;
+    const centerSize = size * 0.24;
+    const nodeSize   = size * 0.17;
 
     const center = document.getElementById('wheelCenter');
     center.style.width  = centerSize + 'px';
     center.style.height = centerSize + 'px';
-    document.getElementById('centerTodo').style.fontSize = (centerSize * 0.38) + 'px';
-    document.getElementById('centerLabel').style.fontSize = (centerSize * 0.13) + 'px';
+    document.getElementById('centerNum').style.fontSize   = (centerSize * 0.38) + 'px';
+    document.getElementById('centerLabel').style.fontSize = (centerSize * 0.14) + 'px';
 
-    const svg  = document.getElementById('wheelSvg');
+    const svg = document.getElementById('wheelSvg');
     svg.innerHTML = '';
 
     const keys = Object.keys(CATS);
@@ -781,30 +832,28 @@
       const nx    = cx + r * Math.cos(angle);
       const ny    = cy + r * Math.sin(angle);
 
-      // Spoke: from edge of center circle to edge of node
-      const cr = centerSize / 2, nr = nodeSize / 2;
+      // Spoke
+      const cr = centerSize / 2 + 2, nr = nodeSize / 2 + 2;
       const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       line.setAttribute('x1', cx + cr * Math.cos(angle));
       line.setAttribute('y1', cy + cr * Math.sin(angle));
       line.setAttribute('x2', nx - nr * Math.cos(angle));
       line.setAttribute('y2', ny - nr * Math.sin(angle));
-      line.setAttribute('stroke', '#D0C0AE');
+      line.setAttribute('stroke', '#D0BFAA');
       line.setAttribute('stroke-width', '1');
-      line.setAttribute('stroke-dasharray', '3 5');
+      line.setAttribute('stroke-dasharray', '2 4');
       svg.appendChild(line);
 
       // Node
       const node = document.createElement('div');
-      node.className = 'wheel-node';
+      node.className = 'wheel-node' + (currentCat === key ? ' active' : '');
       node.style.cssText = `
-        left: ${nx}px; top: ${ny}px;
-        width: ${nodeSize}px; height: ${nodeSize}px;
-        --node-color: ${cat.color};
-        padding: ${nodeSize * 0.08}px;
+        left:${nx}px; top:${ny}px;
+        width:${nodeSize}px; height:${nodeSize}px;
+        --node-color:${cat.color};
+        border-top-color:${cat.color};
       `;
-      node.innerHTML = `
-        <div class="node-name" style="font-size:${nodeFontSize}px">${cat.label}</div>
-      `;
+      node.innerHTML = `<div class="node-name" style="font-size:${nodeSize * 0.17}px; color:${currentCat === key ? cat.color : ''}">${cat.label}</div>`;
       node.onclick = () => showCat(key);
       wrap.appendChild(node);
     });
@@ -814,12 +863,13 @@
   function showCat(key) {
     currentCat = key;
     catFilter  = 'all';
-    document.getElementById('wheelView').classList.add('hidden');
-    document.getElementById('catView').classList.remove('hidden');
     document.querySelectorAll('.cf-pill').forEach(p =>
       p.classList.toggle('active', p.dataset.cf === 'all')
     );
+    document.getElementById('placeholder').style.display = 'none';
+    document.getElementById('catView').classList.add('visible');
     renderCatView();
+    renderWheel(); // re-render to highlight active node
   }
 
   function renderCatView() {
@@ -828,7 +878,8 @@
     const todo     = catItems.filter(a => a.status === 'todo').length;
     const done     = catItems.filter(a => a.status === 'done').length;
 
-    document.getElementById('catTitle').textContent    = cat.label;
+    document.getElementById('catTitle').innerHTML =
+      `<span style="font-family:'Playfair Display',serif; font-size:2rem; font-weight:600; color:${cat.color}">${cat.label}</span>`;
     document.getElementById('catSubtitle').textContent = `${todo} to do · ${done} done`;
     document.documentElement.style.setProperty('--node-color', cat.color);
 
@@ -836,11 +887,9 @@
     visible.sort((a, b) => a.status === b.status ? 0 : a.status === 'todo' ? -1 : 1);
 
     const list = document.getElementById('activityList');
-    if (!visible.length) {
-      list.innerHTML = `<div class="empty-row">Nothing here yet — add one above.</div>`;
-      return;
-    }
-    list.innerHTML = visible.map((a, i) => rowHTML(a, i * 28)).join('');
+    list.innerHTML = visible.length
+      ? visible.map((a, i) => rowHTML(a, i * 25)).join('')
+      : `<div class="empty-row">Nothing here yet — add one above.</div>`;
   }
 
   function rowHTML(a, delay) {
@@ -853,8 +902,7 @@
       ).join('')
     }</div>` : '';
 
-    const date = a.dateCompleted
-      ? `<span class="activity-date">${a.dateCompleted}</span>` : '';
+    const date = a.dateCompleted ? `<span class="activity-date">${a.dateCompleted}</span>` : '';
 
     return `
       <div class="activity-row ${isDone?'done':''}"
@@ -874,7 +922,7 @@
   }
 
   function linkHost(url) {
-    try { return new URL(url).hostname.replace('www.',''); } catch { return 'link'; }
+    try { return new URL(url).hostname.replace('www.', ''); } catch { return 'link'; }
   }
 
   function esc(s) {
@@ -897,7 +945,8 @@
       a.rating = null;
     }
     save();
-    if (currentCat) renderCatView(); else renderWheel();
+    renderWheel();
+    if (currentCat) renderCatView();
   }
 
   function rate(id, n) {
@@ -909,8 +958,8 @@
   function del(id) {
     if (!confirm('Remove this adventure?')) return;
     items = items.filter(x => x.id !== id);
-    save();
-    if (currentCat) renderCatView(); else renderWheel();
+    save(); renderWheel();
+    if (currentCat) renderCatView();
   }
 
   // ── MODAL ────────────────────────────────────────
@@ -970,7 +1019,9 @@
       });
     }
     save(); closeModal('formOverlay');
-    if (currentCat) renderCatView(); else renderWheel();
+    renderWheel();
+    if (currentCat === pickedCat) renderCatView();
+    else showCat(pickedCat);
   }
 
   // ── SURPRISE ME ──────────────────────────────────
@@ -989,11 +1040,11 @@
   // ── CONFETTI ─────────────────────────────────────
   function confetti() {
     const layer  = document.getElementById('confetti-layer');
-    const colors = ['#B5714A','#C4906A','#9E6E8A','#7A6E9E','#5E8C6A','#C49A5A','#5E8EA0'];
-    for (let i = 0; i < 60; i++) {
+    const colors = ['#D4703A','#C44A3A','#D4855A','#8B6AAE','#B55A8A','#4A9E6A','#D4A046','#4A8EAA'];
+    for (let i = 0; i < 70; i++) {
       const el = document.createElement('div');
       el.className = 'cf';
-      const s = Math.random() * 7 + 4;
+      const s = Math.random() * 8 + 4;
       el.style.cssText = `
         left:${Math.random()*100}vw; top:-10px;
         width:${s}px; height:${s}px;
@@ -1012,9 +1063,7 @@
     const btn = e.target.closest('.cf-pill');
     if (!btn) return;
     catFilter = btn.dataset.cf;
-    document.querySelectorAll('.cf-pill').forEach(p =>
-      p.classList.toggle('active', p === btn)
-    );
+    document.querySelectorAll('.cf-pill').forEach(p => p.classList.toggle('active', p === btn));
     renderCatView();
   });
 
@@ -1030,14 +1079,12 @@
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (!document.getElementById('wheelView').classList.contains('hidden')) renderWheel();
-    }, 150);
+    resizeTimer = setTimeout(renderWheel, 150);
   });
 
   // ── INIT ─────────────────────────────────────────
   load();
-  requestAnimationFrame(showWheel);
+  requestAnimationFrame(renderWheel);
   </script>
 </body>
 </html>
