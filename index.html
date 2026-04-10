@@ -150,23 +150,22 @@
 
     /* ── LEFT FOOTER ─────────────────────────────── */
     .left-footer {
-      display: flex; flex-direction: column; gap: 0.5rem; width: 100%;
+      display: flex; gap: 0.6rem; width: 100%;
       margin-top: auto; padding-top: 0.75rem;
     }
 
     .surprise-btn {
-      width: 100%; position: relative; overflow: hidden;
+      flex: 2; position: relative; overflow: hidden;
       background: var(--accent); border: none;
-      padding: 0.8rem 1rem; border-radius: 8px;
+      padding: 0.52rem 1rem; border-radius: 6px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem; font-weight: 600;
-      color: white; cursor: pointer; letter-spacing: 0.01em;
-      transition: transform 0.15s, opacity 0.15s;
-      box-shadow: 0 2px 12px rgba(192,90,56,0.35);
+      font-size: 0.8rem; font-weight: 600;
+      color: white; cursor: pointer;
+      transition: opacity 0.15s;
+      box-shadow: 0 2px 10px rgba(192,90,56,0.3);
     }
 
-    .surprise-btn:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 4px 18px rgba(192,90,56,0.45); }
-    .surprise-btn:active { transform: translateY(0); }
+    .surprise-btn:hover { opacity: 0.88; }
 
     .surprise-btn::after {
       content: ''; position: absolute; inset: 0;
@@ -180,16 +179,6 @@
       45%  { transform: translateX(100%); }
       100% { transform: translateX(100%); }
     }
-
-    .add-link {
-      background: none; border: none; cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.75rem; font-weight: 400;
-      color: var(--l-muted); text-align: center; width: 100%;
-      padding: 0.15rem 0; transition: color 0.15s;
-    }
-
-    .add-link:hover { color: var(--l-text); }
 
     .ghost-btn {
       background: transparent;
@@ -571,7 +560,7 @@
       </div>
       <div class="left-footer">
         <button class="surprise-btn" onclick="surpriseMe()">pick one for us</button>
-        <button class="add-link" onclick="openAdd(null)">+ add something</button>
+        <button class="ghost-btn" style="flex:1" onclick="openAdd(null)">+ add</button>
       </div>
     </div>
 
