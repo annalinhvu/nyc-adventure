@@ -88,6 +88,24 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       text-align: center; z-index: 3;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+    }
+
+    #wheelCenter:hover {
+      background: #2A1E14;
+      border-color: rgba(242,234,224,0.32);
+    }
+
+    #wheelCenter.active-done {
+      border-color: var(--accent);
+    }
+
+    .cat-group-header {
+      font-size: 0.68rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 1rem 0 0.4rem;
+      border-bottom: 1px solid var(--r-border);
+      margin-bottom: 0.25rem;
     }
 
     #centerNum {
@@ -497,7 +515,7 @@
       </header>
       <div id="wheelWrap">
         <svg id="wheelSvg"></svg>
-        <div id="wheelCenter">
+        <div id="wheelCenter" onclick="showAllDone()">
           <div id="centerNum"></div>
           <div id="centerLabel">done</div>
         </div>
@@ -861,9 +879,48 @@
     currentCat = key; catFilter = 'all';
     document.querySelectorAll('.cf-pill').forEach(p =>
       p.classList.toggle('active', p.dataset.cf==='all'));
+    document.getElementById('catFilters').style.display = '';
     document.getElementById('placeholder').style.display = 'none';
     document.getElementById('catView').classList.add('visible');
+    document.getElementById('wheelCenter').classList.remove('active-done');
     renderCatView(); renderWheel();
+  }
+
+  function showAllDone() {
+    const done = items.filter(a => a.status === 'done');
+    currentCat = null; catFilter = 'done';
+    document.getElementById('catFilters').style.display = 'none';
+    document.getElementById('placeholder').style.display = 'none';
+    document.getElementById('catView').classList.add('visible');
+    document.getElementById('wheelCenter').classList.add('active-done');
+    document.documentElement.style.setProperty('--node-color', 'var(--accent)');
+    renderWheel();
+
+    document.getElementById('catTitle').textContent = 'Done';
+    document.getElementById('catSubtitle').textContent =
+      `${done.length} adventure${done.length !== 1 ? 's' : ''} completed`;
+
+    if (!done.length) {
+      document.getElementById('activityList').innerHTML =
+        '<div class="empty-row">Nothing done yet. Go do something!</div>';
+      return;
+    }
+
+    // Group by category, in CATS order
+    const byCat = {};
+    done.forEach(a => { (byCat[a.category] = byCat[a.category] || []).push(a); });
+    // Sort within each group: most recently done first
+    Object.values(byCat).forEach(arr =>
+      arr.sort((a,b) => (b.dateCompleted||'').localeCompare(a.dateCompleted||'')));
+
+    let html = '';
+    Object.keys(CATS).forEach(key => {
+      if (!byCat[key]?.length) return;
+      const cat = CATS[key];
+      html += `<div class="cat-group-header" style="color:${cat.color}">${cat.label}</div>`;
+      byCat[key].forEach((a, i) => { html += rowHTML(a, i * 20); });
+    });
+    document.getElementById('activityList').innerHTML = html;
   }
 
   function renderCatView() {
