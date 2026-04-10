@@ -1,12 +1,12 @@
 # our nyc adventure log
 
-A personal web app for tracking NYC activities to do with my husband — organized by category, with details on every entry and a surprise picker for when we can't decide.
+A personal web app for tracking NYC activities — organized by category, with details on every entry and a surprise picker for when we can't decide.
 
 **Live site:** https://annalinhvu.github.io/nyc-adventure/
 
 ## What it is
 
-70 curated NYC activities across 10 categories: Cinema, Food, Bakeries, Arts, Shows, Explore, Wellness, Day Trips, Free, and Classes. Each entry has a description, practical tips (address, price, how to book), and a seasonal tag. You can mark things done, rate them, add your own, and let the app pick something at random.
+Curated NYC activities across 10 categories: Cinema, Food, Bakeries, Arts, Shows, Explore, Wellness, Day Trips, Free, and Classes. Each entry has a description, practical tips (address, price, how to book), and a seasonal tag. You can mark things done, rate them, add your own, and let the app pick something at random.
 
 ## Features
 
