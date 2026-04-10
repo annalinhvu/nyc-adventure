@@ -3,350 +3,426 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>our nyc adventure log ♡</title>
+  <title>our nyc adventure log</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --cream: #F5EDE0;
-      --card-bg: #FDFAF6;
-      --text: #2E1F14;
-      --text-light: #9A8070;
-      --shadow: 0 2px 14px rgba(46,31,20,0.07);
-      --shadow-hover: 0 8px 28px rgba(46,31,20,0.13);
-      --radius: 14px;
-      --radius-sm: 8px;
+      --bg:         #EDE3D8;
+      --surface:    #F5EDE0;
+      --card:       #FFFCF8;
+      --text:       #2C1A0E;
+      --text-mid:   #7A6450;
+      --text-light: #A89080;
+      --border:     #DDD0BE;
+      --shadow-sm:  0 2px 10px rgba(44,26,14,0.07);
+      --shadow:     0 4px 18px rgba(44,26,14,0.10);
+      --shadow-lg:  0 8px 32px rgba(44,26,14,0.14);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--cream);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
       color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── VIEWS ───────────────────────────────────── */
+    .view { min-height: 100vh; }
+    .view.hidden { display: none; }
+
+    /* ── WHEEL VIEW ──────────────────────────────── */
+    #wheelView {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1.5rem 2rem;
       min-height: 100vh;
     }
 
-    /* ── HEADER ─────────────────────────────────────────── */
-    header {
+    #wheelView header {
       text-align: center;
-      padding: 3.5rem 1.5rem 1.5rem;
+      margin-bottom: 1.5rem;
     }
 
-    .header-deco {
-      font-size: 1.2rem;
-      letter-spacing: 0.5rem;
-      opacity: 0.45;
-      margin-bottom: 0.5rem;
-    }
-
-    header h1 {
-      font-family: 'Caveat', cursive;
-      font-size: clamp(2.8rem, 7vw, 4.5rem);
-      font-weight: 700;
+    #wheelView h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+      font-weight: 600;
+      letter-spacing: -0.01em;
       color: var(--text);
-      line-height: 1.1;
+      margin-bottom: 0.3rem;
     }
 
-    header .subtitle {
-      margin-top: 0.5rem;
+    .subtitle {
+      font-size: 0.82rem;
       color: var(--text-light);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+
+    .stats-inline {
+      display: flex;
+      gap: 1.25rem;
+      justify-content: center;
+      margin-top: 0.9rem;
+      font-size: 0.78rem;
+      color: var(--text-mid);
+    }
+
+    .stats-inline b {
+      font-family: 'Playfair Display', serif;
       font-size: 1rem;
+      color: var(--text);
       font-weight: 600;
     }
 
-    /* ── STATS ──────────────────────────────────────────── */
-    .stats-bar {
-      display: flex;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 1.25rem 1.5rem;
-      flex-wrap: wrap;
+    /* ── WHEEL ───────────────────────────────────── */
+    #wheelWrap {
+      position: relative;
+      flex-shrink: 0;
     }
 
-    .stat {
-      background: white;
-      border-radius: 50px;
-      padding: 0.45rem 1.1rem;
-      font-weight: 700;
-      font-size: 0.88rem;
+    #wheelSvg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #wheelCenter {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: var(--card);
       box-shadow: var(--shadow);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.35rem;
-      white-space: nowrap;
+      justify-content: center;
+      text-align: center;
+      border: 1px solid var(--border);
+      z-index: 3;
+      cursor: default;
     }
 
-    .stat-num {
-      font-family: 'Caveat', cursive;
-      font-size: 1.2rem;
+    #centerTodo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      color: var(--text);
       line-height: 1;
     }
 
-    /* ── CONTROLS ───────────────────────────────────────── */
-    .controls {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 1.5rem 0.5rem;
-    }
-
-    .filter-row {
-      display: flex;
-      gap: 0.45rem;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 0.6rem;
-    }
-
-    .filter-label {
-      font-weight: 800;
-      font-size: 0.72rem;
+    #centerLabel {
+      font-size: 0.6rem;
+      color: var(--text-light);
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--text-light);
-      margin-right: 0.2rem;
-      white-space: nowrap;
+      letter-spacing: 0.1em;
+      margin-top: 0.2rem;
     }
 
-    .pill {
-      padding: 0.38rem 0.95rem;
-      border-radius: 50px;
-      border: 2px solid transparent;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      background: white;
-      color: var(--text);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    .pill:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .pill.status-active {
-      background: var(--text);
-      color: white;
-    }
-
-    .actions-row {
+    .wheel-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
       display: flex;
-      gap: 0.7rem;
-      margin-top: 0.9rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 0.6rem 1.4rem;
-      border-radius: 50px;
-      border: none;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      font-size: 0.92rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.35rem;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      text-align: center;
+      z-index: 2;
+      border-top: 3px solid var(--node-color, var(--border));
     }
 
-    .btn-add {
-      background: #A85C4A;
-      color: #FDF6EE;
-      box-shadow: 0 4px 14px rgba(168,92,74,0.25);
+    .wheel-node:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: var(--shadow-lg);
     }
 
-    .btn-add:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(168,92,74,0.35);
+    .node-count {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--node-color, var(--text-mid));
     }
 
-    .btn-surprise {
-      background: #7A6E9E;
-      color: #FDF6EE;
-      box-shadow: 0 4px 14px rgba(122,110,158,0.25);
+    .node-name {
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: var(--text-mid);
+      line-height: 1.2;
+      margin-top: 0.15rem;
     }
 
-    .btn-surprise:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(122,110,158,0.35);
+    .node-done {
+      font-size: 0.52rem;
+      color: #C49A5A;
+      margin-top: 0.1rem;
+      font-weight: 400;
     }
 
-    .btn-reset {
-      background: var(--card-bg);
-      color: var(--text-light);
-      box-shadow: var(--shadow);
-      border: 1px solid #E0D0C0;
+    /* ── WHEEL FOOTER ────────────────────────────── */
+    #wheelFooter {
+      margin-top: 1.75rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .btn-reset:hover {
-      background: #EEE0D0;
+    .ghost-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1.2rem;
+      border-radius: 50px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .ghost-btn:hover {
+      background: var(--card);
+      border-color: var(--text-mid);
       color: var(--text);
     }
 
-    /* ── GRID ────────────────────────────────────────────── */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
-      gap: 1.2rem;
-      padding: 1rem 1.5rem 5rem;
-      max-width: 1180px;
+    .solid-btn {
+      background: var(--text);
+      border: 1px solid var(--text);
+      padding: 0.5rem 1.2rem;
+      border-radius: 50px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--surface);
+      cursor: pointer;
+      transition: opacity 0.18s;
+    }
+
+    .solid-btn:hover { opacity: 0.82; }
+
+    /* ── CATEGORY VIEW ───────────────────────────── */
+    #catView {
+      max-width: 660px;
       margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
     }
 
-    /* ── CARD ────────────────────────────────────────────── */
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 1.3rem 1.3rem 1rem;
-      box-shadow: var(--shadow);
-      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
-      position: relative;
-      border-top: 4px solid var(--cc);
-      animation: cardIn 0.35s ease backwards;
+    #catHeader {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
     }
 
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(14px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+    .back-btn {
+      background: none; border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem; font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 0.25rem 0;
+      transition: color 0.18s;
+      white-space: nowrap;
+      margin-top: 0.35rem;
     }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
+    .back-btn:hover { color: var(--text); }
+
+    #catMeta { flex: 1; }
+
+    #catTitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text);
     }
 
-    .card.done {
-      opacity: 0.68;
+    #catSubtitle {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      margin-top: 0.15rem;
     }
 
-    .card.done .card-title {
+    /* ── CAT FILTERS ─────────────────────────────── */
+    #catFilters {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.25rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+
+    .cf-pill {
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      border: 1px solid transparent;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-light);
+      transition: all 0.18s;
+    }
+
+    .cf-pill:hover { color: var(--text); }
+
+    .cf-pill.active {
+      background: var(--text);
+      color: var(--surface);
+      border-color: var(--text);
+    }
+
+    /* ── ACTIVITY LIST ───────────────────────────── */
+    .activity-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      animation: rowIn 0.22s ease backwards;
+    }
+
+    @keyframes rowIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .activity-row:last-child { border-bottom: none; }
+
+    .status-dot {
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      border: 1.5px solid var(--node-color, var(--border));
+      flex-shrink: 0;
+      margin-top: 4px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .activity-row.done .status-dot {
+      background: var(--node-color);
+      border-color: var(--node-color);
+    }
+
+    .status-dot:hover { transform: scale(1.25); }
+
+    .activity-body { flex: 1; min-width: 0; }
+
+    .activity-title {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: color 0.18s;
+      line-height: 1.45;
+    }
+
+    .activity-row.done .activity-title {
       text-decoration: line-through;
       color: var(--text-light);
     }
 
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.7rem;
-    }
+    .activity-title:hover { color: var(--node-color, var(--text-mid)); }
 
-    .card-emoji { font-size: 2rem; line-height: 1; }
-
-    .card-menu {
-      display: flex;
-      gap: 0.25rem;
-      opacity: 0;
-      transition: opacity 0.18s;
-    }
-
-    .card:hover .card-menu { opacity: 1; }
-
-    .icon-btn {
-      width: 28px; height: 28px;
-      border-radius: 50%; border: none;
-      cursor: pointer; font-size: 0.78rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.18s;
-      background: #f3f3f3;
-    }
-
-    .icon-btn:hover { background: #e8e8e8; transform: scale(1.12); }
-    .icon-btn.del:hover { background: #ffe5e5; }
-
-    .cat-tag {
-      display: inline-flex; align-items: center; gap: 0.25rem;
-      font-size: 0.72rem; font-weight: 700;
-      padding: 0.22rem 0.6rem; border-radius: 50px;
-      margin-bottom: 0.5rem;
-      color: white;
-      background: var(--cc);
-    }
-
-    .card-title {
-      font-weight: 800;
-      font-size: 0.98rem;
-      line-height: 1.35;
-      margin-bottom: 0.45rem;
-    }
-
-    .card-notes {
-      font-size: 0.83rem;
+    .activity-notes {
+      font-size: 0.78rem;
       color: var(--text-light);
-      line-height: 1.55;
-      margin-bottom: 0.6rem;
+      margin-top: 0.2rem;
+      line-height: 1.6;
+      font-weight: 400;
     }
 
-    .card-link {
-      display: inline-flex; align-items: center; gap: 0.2rem;
-      font-size: 0.78rem; font-weight: 700;
-      color: #4895EF; text-decoration: none;
-      margin-bottom: 0.6rem;
+    .activity-link {
+      font-size: 0.72rem;
+      color: var(--text-mid);
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.15rem;
+      margin-top: 0.25rem;
     }
 
-    .card-link:hover { text-decoration: underline; }
+    .activity-link:hover { text-decoration: underline; }
 
-    .stars {
-      display: flex; gap: 0.08rem;
-      margin-bottom: 0.55rem;
+    .activity-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.35rem;
     }
+
+    .activity-date {
+      font-size: 0.7rem;
+      color: var(--text-light);
+    }
+
+    .stars-row { display: flex; gap: 1px; }
 
     .star {
-      cursor: pointer; font-size: 1.05rem;
-      transition: transform 0.1s;
-      color: #e0e0e0;
+      font-size: 0.82rem;
+      color: #D8C8B8;
+      cursor: pointer;
+      transition: all 0.1s;
     }
 
     .star.lit { color: #C49A5A; }
-    .star:hover { transform: scale(1.25); color: #C49A5A; }
+    .star:hover { transform: scale(1.2); color: #C49A5A; }
 
-    .card-footer {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      padding-top: 0.7rem;
-      border-top: 1px solid #f2f2f2;
-      margin-top: 0.5rem;
+    .activity-actions {
+      display: flex;
+      gap: 0.2rem;
+      opacity: 0;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+      padding-top: 2px;
     }
 
-    .check-btn {
-      display: inline-flex; align-items: center; gap: 0.35rem;
-      padding: 0.35rem 0.9rem;
-      border-radius: 50px;
-      border: 2px solid var(--cc);
-      background: transparent;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700; font-size: 0.78rem;
-      cursor: pointer; transition: all 0.18s;
-      color: var(--cc);
-    }
+    .activity-row:hover .activity-actions { opacity: 1; }
 
-    .check-btn:hover, .card.done .check-btn {
-      background: var(--cc); color: white;
-    }
-
-    .card-date {
-      font-size: 0.72rem; color: var(--text-light); font-weight: 600;
-    }
-
-    /* ── EMPTY STATE ────────────────────────────────────── */
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center; padding: 4rem 2rem;
+    .row-btn {
+      width: 26px; height: 26px;
+      border-radius: 50%; border: none;
+      background: none; cursor: pointer;
+      font-size: 0.72rem;
+      display: flex; align-items: center; justify-content: center;
       color: var(--text-light);
+      transition: all 0.15s;
     }
 
-    .empty .empty-icon { font-size: 3.5rem; margin-bottom: 0.75rem; }
-    .empty p { font-size: 1rem; font-weight: 600; }
+    .row-btn:hover { background: var(--border); color: var(--text); }
+    .row-btn.del:hover { background: #EDD8D0; color: #A85C4A; }
 
-    /* ── MODAL ──────────────────────────────────────────── */
+    .empty-row {
+      padding: 3rem 0;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    /* ── MODALS ──────────────────────────────────── */
     .overlay {
       position: fixed; inset: 0;
-      background: rgba(61,44,44,0.32);
-      backdrop-filter: blur(5px);
+      background: rgba(44,26,14,0.22);
+      backdrop-filter: blur(6px);
       z-index: 200;
       display: flex; align-items: center; justify-content: center;
       padding: 1.5rem;
@@ -354,129 +430,154 @@
     }
 
     .overlay.hidden { display: none; }
-
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .modal {
-      background: white;
-      border-radius: 24px;
-      padding: 2rem;
-      width: 100%; max-width: 470px;
+      background: var(--card);
+      border-radius: 18px;
+      padding: 1.75rem;
+      width: 100%; max-width: 440px;
       max-height: 92vh; overflow-y: auto;
-      animation: modalPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 24px 60px rgba(61,44,44,0.18);
+      animation: modalPop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
     }
 
     @keyframes modalPop {
-      from { opacity: 0; transform: scale(0.88) translateY(18px); }
+      from { opacity: 0; transform: scale(0.92) translateY(12px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .modal-title {
-      font-family: 'Caveat', cursive;
-      font-size: 1.9rem; font-weight: 700;
-      margin-bottom: 1.4rem;
-      display: flex; align-items: center; gap: 0.4rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 1.35rem;
+      color: var(--text);
     }
 
-    .form-group { margin-bottom: 1.1rem; }
+    .form-group { margin-bottom: 1rem; }
 
     .form-group label {
       display: block;
-      font-weight: 800; font-size: 0.78rem;
-      text-transform: uppercase; letter-spacing: 0.5px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
       color: var(--text-light);
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.3rem;
     }
 
     .form-group input,
     .form-group textarea {
       width: 100%;
-      padding: 0.65rem 0.95rem;
-      border: 2px solid #f0f0f0;
-      border-radius: var(--radius-sm);
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.93rem; font-weight: 600;
+      padding: 0.58rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem; font-weight: 400;
       color: var(--text);
-      outline: none; transition: border-color 0.18s;
-      background: white;
+      outline: none;
+      transition: border-color 0.18s;
+      background: var(--surface);
     }
 
     .form-group input:focus,
-    .form-group textarea:focus { border-color: #A85C4A; }
+    .form-group textarea:focus { border-color: var(--text-mid); }
 
-    .form-group textarea { resize: vertical; min-height: 78px; }
+    .form-group textarea { resize: vertical; min-height: 72px; }
 
     .cat-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 0.4rem;
+      gap: 0.35rem;
     }
 
     .cat-opt {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 0.15rem;
       padding: 0.45rem 0.2rem;
-      border-radius: 10px;
-      border: 2px solid #f0f0f0;
-      cursor: pointer; transition: all 0.18s;
-      font-size: 0.65rem; font-weight: 700;
-      text-align: center; color: #999;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--text-mid);
+      background: var(--surface);
+      line-height: 1.3;
     }
 
-    .cat-opt:hover { transform: translateY(-2px); }
-    .cat-opt .co-emoji { font-size: 1.4rem; }
+    .cat-opt:hover { border-color: var(--text-mid); }
+    .cat-opt.sel { color: white; border-color: transparent; }
 
-    .cat-opt.sel {
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    .modal-btns {
-      display: flex; gap: 0.65rem; margin-top: 1.4rem;
-    }
+    .modal-btns { display: flex; gap: 0.6rem; margin-top: 1.35rem; }
 
     .btn-cancel {
-      flex: 1; padding: 0.6rem 1rem;
-      border-radius: 50px; border: none;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700; font-size: 0.9rem;
+      flex: 1; padding: 0.52rem 1rem;
+      border-radius: 50px; border: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500; font-size: 0.85rem;
       cursor: pointer; transition: all 0.18s;
-      background: #f3f3f3; color: var(--text-light);
+      background: transparent; color: var(--text-mid);
     }
 
-    .btn-cancel:hover { background: #e8e8e8; }
+    .btn-cancel:hover { background: var(--border); }
 
     .btn-save {
-      flex: 2; padding: 0.6rem 1.4rem;
+      flex: 2; padding: 0.52rem 1.2rem;
       border-radius: 50px; border: none;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800; font-size: 0.95rem;
-      cursor: pointer; transition: all 0.2s;
-      background: #A85C4A; color: #FDF6EE;
-      box-shadow: 0 4px 14px rgba(168,92,74,0.25);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600; font-size: 0.85rem;
+      cursor: pointer; transition: opacity 0.18s;
+      background: var(--text); color: var(--surface);
     }
 
-    .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(168,92,74,0.35); }
+    .btn-save:hover { opacity: 0.82; }
 
-    /* ── SURPRISE MODAL ─────────────────────────────────── */
-    .surprise-modal .modal { text-align: center; max-width: 340px; }
-    .s-emoji { font-size: 4rem; margin-bottom: 0.4rem; }
-    .s-tag {
-      display: inline-flex; align-items: center; gap: 0.25rem;
-      font-size: 0.75rem; font-weight: 700;
-      padding: 0.25rem 0.7rem; border-radius: 50px;
-      color: white; margin-bottom: 0.6rem;
+    /* ── SURPRISE MODAL ──────────────────────────── */
+    .surprise-overlay .modal {
+      max-width: 340px;
+      text-align: center;
     }
+
+    .s-eyebrow {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-light);
+      margin-bottom: 0.4rem;
+    }
+
+    .s-cat {
+      display: inline-block;
+      font-size: 0.7rem; font-weight: 600;
+      padding: 0.22rem 0.7rem;
+      border-radius: 50px;
+      color: white;
+      margin-bottom: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
     .s-title {
-      font-family: 'Caveat', cursive;
-      font-size: 1.9rem; font-weight: 700;
-      margin-bottom: 0.4rem; line-height: 1.2;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 600;
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+      color: var(--text);
     }
-    .s-notes { font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem; line-height: 1.5; }
-    .surprise-modal .modal-btns { flex-direction: column; }
 
-    /* ── CONFETTI ────────────────────────────────────────── */
+    .s-notes {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .surprise-overlay .modal-btns { flex-direction: column; }
+
+    /* ── CONFETTI ────────────────────────────────── */
     #confetti-layer {
       position: fixed; inset: 0;
       pointer-events: none; z-index: 9999;
@@ -488,433 +589,474 @@
     }
 
     @keyframes cfFall {
-      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-      80%  { opacity: 1; }
-      100% { transform: translateY(105vh) rotate(800deg); opacity: 0; }
+      0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      85%  { opacity: 0.7; }
+      100% { transform: translateY(105vh) rotate(700deg); opacity: 0; }
     }
 
-    /* ── SCROLLBAR ──────────────────────────────────────── */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-thumb { background: #e0d4d4; border-radius: 3px; }
-
-    /* ── RESPONSIVE ─────────────────────────────────────── */
-    @media (max-width: 540px) {
-      .grid { grid-template-columns: 1fr; }
-      .cat-grid { grid-template-columns: repeat(5, 1fr); }
-      .modal { padding: 1.4rem; }
-    }
+    /* ── SCROLLBAR ───────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
   </style>
 </head>
 <body>
+  <div id="confetti-layer"></div>
 
-<div id="confetti-layer"></div>
-
-<!-- ── HEADER ──────────────────────────────────────────── -->
-<header>
-  <div class="header-deco">✦ ✦ ✦</div>
-  <h1>our nyc adventure log ♡</h1>
-  <p class="subtitle">things we want to do · places to go · memories to make</p>
-</header>
-
-<!-- ── STATS ───────────────────────────────────────────── -->
-<div class="stats-bar" id="statsBar"></div>
-
-<!-- ── CONTROLS ────────────────────────────────────────── -->
-<div class="controls">
-  <div class="filter-row" id="statusRow">
-    <span class="filter-label">Show</span>
-    <button class="pill status-active" data-s="all">All</button>
-    <button class="pill" data-s="todo">Want to do ✨</button>
-    <button class="pill" data-s="done">Done! 🎉</button>
-  </div>
-  <div class="filter-row" id="catRow">
-    <span class="filter-label">Category</span>
-    <!-- filled by JS -->
-  </div>
-  <div class="actions-row">
-    <button class="btn btn-surprise" onclick="surpriseMe()">🎲 Surprise Me!</button>
-    <button class="btn btn-add" onclick="openAdd()">＋ Add Adventure</button>
-    <button class="btn btn-reset" onclick="resetData()">↺ Reset to defaults</button>
-  </div>
-</div>
-
-<!-- ── GRID ─────────────────────────────────────────────── -->
-<div class="grid" id="grid"></div>
-
-<!-- ── ADD / EDIT MODAL ─────────────────────────────────── -->
-<div class="overlay hidden" id="formOverlay">
-  <div class="modal">
-    <div class="modal-title" id="formTitle">✨ New Adventure</div>
-    <div class="form-group">
-      <label>What's the adventure?</label>
-      <input type="text" id="fTitle" placeholder="e.g. Eat at Din Tai Fung" />
+  <!-- ── WHEEL VIEW ────────────────────────────────── -->
+  <div id="wheelView" class="view">
+    <header>
+      <h1>our nyc adventure log</h1>
+      <p class="subtitle">things we want to do &nbsp;·&nbsp; places to go &nbsp;·&nbsp; memories to make</p>
+      <div class="stats-inline" id="statsInline"></div>
+    </header>
+    <div id="wheelWrap">
+      <svg id="wheelSvg"></svg>
+      <div id="wheelCenter">
+        <div id="centerTodo"></div>
+        <div id="centerLabel">to do</div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Category</label>
-      <div class="cat-grid" id="catPicker"></div>
-    </div>
-    <div class="form-group">
-      <label>Notes (optional)</label>
-      <textarea id="fNotes" placeholder="Tips, reminders, why you want to do it..."></textarea>
-    </div>
-    <div class="form-group">
-      <label>Link (optional)</label>
-      <input type="url" id="fLink" placeholder="https://..." />
-    </div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal('formOverlay')">Cancel</button>
-      <button class="btn-save" onclick="saveItem()">Save ♡</button>
+    <div id="wheelFooter">
+      <button class="ghost-btn" onclick="surpriseMe()">pick one for us</button>
+      <button class="solid-btn" onclick="openAdd(null)">add adventure</button>
     </div>
   </div>
-</div>
 
-<!-- ── SURPRISE MODAL ───────────────────────────────────── -->
-<div class="overlay hidden surprise-modal" id="surpriseOverlay">
-  <div class="modal">
-    <div class="s-emoji" id="sEmoji"></div>
-    <div style="font-weight:800; font-size:0.82rem; color:var(--text-light); margin-bottom:0.3rem;">tonight, let's...</div>
-    <div class="s-tag" id="sTag"></div>
-    <div class="s-title" id="sTitle"></div>
-    <div class="s-notes" id="sNotes"></div>
-    <div class="modal-btns">
-      <button class="btn-surprise btn" onclick="surpriseMe()">🎲 Pick Another</button>
-      <button class="btn-cancel" onclick="closeModal('surpriseOverlay')">Close</button>
+  <!-- ── CATEGORY VIEW ─────────────────────────────── -->
+  <div id="catView" class="view hidden">
+    <div id="catHeader">
+      <button class="back-btn" onclick="showWheel()">&#8592; all categories</button>
+      <div id="catMeta">
+        <h2 id="catTitle"></h2>
+        <div id="catSubtitle"></div>
+      </div>
+      <button class="ghost-btn" onclick="openAdd(currentCat)" style="font-size:0.78rem; padding:0.4rem 0.9rem; flex-shrink:0;">+ add</button>
+    </div>
+    <div id="catFilters">
+      <button class="cf-pill active" data-cf="all">All</button>
+      <button class="cf-pill" data-cf="todo">To do</button>
+      <button class="cf-pill" data-cf="done">Done</button>
+    </div>
+    <div id="activityList"></div>
+  </div>
+
+  <!-- ── FORM MODAL ────────────────────────────────── -->
+  <div class="overlay hidden" id="formOverlay">
+    <div class="modal">
+      <div class="modal-title" id="formTitle">New Adventure</div>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="fTitle" placeholder="e.g. Eat at Din Tai Fung" />
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <div class="cat-grid" id="catPicker"></div>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="fNotes" placeholder="Tips, reminders, why you want to do this..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Link (optional)</label>
+        <input type="url" id="fLink" placeholder="https://..." />
+      </div>
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModal('formOverlay')">Cancel</button>
+        <button class="btn-save" onclick="saveItem()">Save</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-// ── CATEGORIES ────────────────────────────────────────────
-const CATS = {
-  cinema:   { label: 'Cinema',     emoji: '🎬', color: '#B5714A' },
-  food:     { label: 'Food',       emoji: '🍜', color: '#A85C4A' },
-  bakery:   { label: 'Bakeries',   emoji: '🥐', color: '#C4906A' },
-  arts:     { label: 'Arts',       emoji: '🎨', color: '#7A6E9E' },
-  shows:    { label: 'Shows',      emoji: '🎭', color: '#9E6E8A' },
-  explore:  { label: 'Explore',    emoji: '🗺️',  color: '#5E8C6A' },
-  wellness: { label: 'Wellness',   emoji: '🧖',  color: '#C49A5A' },
-  daytrip:  { label: 'Day Trip',   emoji: '🚂', color: '#5E8EA0' },
-  free:     { label: 'Free/Cheap', emoji: '🆓', color: '#8A9E5A' },
-  classes:  { label: 'Classes',    emoji: '✏️',  color: '#5E7A9E' },
-};
+  <!-- ── SURPRISE MODAL ────────────────────────────── -->
+  <div class="overlay hidden surprise-overlay" id="surpriseOverlay">
+    <div class="modal">
+      <div class="s-eyebrow">tonight, let's...</div>
+      <div class="s-cat" id="sCat"></div>
+      <div class="s-title" id="sTitle"></div>
+      <div class="s-notes" id="sNotes"></div>
+      <div class="modal-btns">
+        <button class="solid-btn" onclick="surpriseMe()" style="border-radius:50px; padding:0.52rem;">pick again</button>
+        <button class="btn-cancel" onclick="closeModal('surpriseOverlay')">close</button>
+      </div>
+    </div>
+  </div>
 
-// ── SEED DATA ─────────────────────────────────────────────
-const SEED = [
-  { id:1,  title:'Catch a film at an indie theater',          category:'cinema',   notes:'Check Screenslate.com for the best screenings & showtimes around the city.',              link:'https://www.screenslate.com' },
-  { id:2,  title:'Movie night at Metrograph',                 category:'cinema',   notes:'Cozy theater on Ludlow St with great programming, a bar, and a little restaurant.',       link:'' },
-  { id:3,  title:'IFC Center double feature',                 category:'cinema',   notes:'Village staple — always something interesting on. Grab popcorn and stay for two.',        link:'' },
-  { id:4,  title:'Eat at Din Tai Fung',                       category:'food',     notes:'Soup dumplings are life. Go on a weekday to avoid the worst of the wait.',                link:'' },
-  { id:5,  title:'Endless pasta night at Olive Garden',       category:'food',     notes:'Never not funny. Soup + salad + endless pasta. Treat yourselves ironically (or not).',    link:'' },
-  { id:6,  title:'Find a new local restaurant together',      category:'food',     notes:'Pick somewhere neither of us has been — browse Eater NY for ideas.',                      link:'https://ny.eater.com' },
-  { id:7,  title:'Explore a new bakery',                      category:'bakery',   notes:'Bien Cuit, Mah Ze Dahr, Patisserie Chanson, Supermoon Bakehouse — so many to try.',       link:'' },
-  { id:8,  title:'Saturday morning pastry crawl',             category:'bakery',   notes:'Pick a neighborhood and hit 2–3 bakeries in a row. Bring a tote bag for extras.',         link:'' },
-  { id:9,  title:'See a Broadway show',                       category:'shows',    notes:'Check TKTS booth for same-day discounts. Or just splurge on something we really want.',   link:'https://www.tdf.org/nyc/7/TKTS-ticket-booths' },
-  { id:10, title:'Catch a live music show',                   category:'arts',     notes:'Baby\'s All Right, Music Hall of Williamsburg, Elsewhere — check Resident Advisor.',       link:'https://ra.co/events/us/newyork' },
-  { id:11, title:'Visit a gallery or art exhibition',         category:'arts',     notes:'New Museum, MoMA PS1, The Shed, or just walk around Chelsea galleries on a Saturday.',    link:'' },
-  { id:12, title:'Explore a neighborhood we\'ve never walked',category:'explore',  notes:'Flushing, Ridgewood, Greenwood Heights, Kingsbridge, Rockaway Beach...',                  link:'' },
-  { id:13, title:'Wander around Governors Island',            category:'explore',  notes:'Free ferry on weekends. Rent bikes and just explore — picnic vibes.',                     link:'' },
-  { id:14, title:'Bathhouse day',                             category:'wellness', notes:'Russian & Turkish Baths in East Village or Aire Ancient Baths in Tribeca.',               link:'' },
-  { id:15, title:'Couples massage',                           category:'wellness', notes:'No special occasion needed. Just do it. We deserve it.',                                   link:'' },
-  { id:16, title:'Impromptu train to upstate NY',             category:'daytrip',  notes:'Hudson or Beacon — hop on Metro-North with no plan. Maybe catch a gallery or just walk.', link:'' },
-  { id:17, title:'Day trip to Connecticut',                   category:'daytrip',  notes:'New Haven for Sally\'s Apizza? Or explore a cute coastal town like Mystic or Essex.',     link:'' },
-  { id:18, title:'Free museum day',                           category:'free',     notes:'MoMA is free Fri 5–9pm. Brooklyn Museum first Saturday of the month. Plan around it!',    link:'' },
-  { id:19, title:'Catch a free outdoor event',                category:'free',     notes:'Bryant Park movies, Shakespeare in the Park, SummerStage, Celebrate Brooklyn!',           link:'' },
-  { id:20, title:'Sneak into a hotel rooftop bar',            category:'free',     notes:'Walk in with confidence. The Williamsburg Hotel, 1 Hotels, Gansevoort, Pod 39...',         link:'' },
-  { id:21, title:'Take a drawing class together',             category:'classes',  notes:'Look for drop-in sessions — something relaxed and fun, not too serious.',                  link:'' },
-  { id:22, title:'Learn ASL together',                        category:'classes',  notes:'Find a beginner workshop or evening class. Such a useful and genuinely interesting skill.', link:'' },
-];
+  <script>
+  // ── CATEGORIES ──────────────────────────────────
+  const CATS = {
+    cinema:   { label: 'Cinema',   color: '#B5714A' },
+    food:     { label: 'Food',     color: '#A85C4A' },
+    bakery:   { label: 'Bakeries', color: '#C4906A' },
+    arts:     { label: 'Arts',     color: '#7A6E9E' },
+    shows:    { label: 'Shows',    color: '#9E6E8A' },
+    explore:  { label: 'Explore',  color: '#5E8C6A' },
+    wellness: { label: 'Wellness', color: '#C49A5A' },
+    daytrip:  { label: 'Day Trip', color: '#5E8EA0' },
+    free:     { label: 'Free',     color: '#8A9E5A' },
+    classes:  { label: 'Classes',  color: '#5E7A9E' },
+  };
 
-// ── STATE ─────────────────────────────────────────────────
-let items = [];
-let filterStatus = 'all';
-let filterCat    = 'all';
-let editingId    = null;
-let pickedCat    = 'food';
+  // ── SEED DATA ────────────────────────────────────
+  const SEED = [
+    { id:1,  title:'Catch a film at an indie theater',          category:'cinema',   notes:'Check Screenslate.com for the best screenings & showtimes.',                             link:'https://www.screenslate.com' },
+    { id:2,  title:'Movie night at Metrograph',                 category:'cinema',   notes:'Cozy theater on Ludlow St with great programming, a bar, and a little restaurant.',      link:'' },
+    { id:3,  title:'IFC Center double feature',                 category:'cinema',   notes:'Village staple — always something interesting on. Stay for two.',                         link:'' },
+    { id:4,  title:'Eat at Din Tai Fung',                       category:'food',     notes:'Soup dumplings are life. Go on a weekday to avoid the worst of the wait.',               link:'' },
+    { id:5,  title:'Endless pasta night at Olive Garden',       category:'food',     notes:'Soup + salad + endless pasta. Treat yourselves, ironically or not.',                     link:'' },
+    { id:6,  title:'Find a new local restaurant together',      category:'food',     notes:'Pick somewhere neither of us has been — browse Eater NY for ideas.',                     link:'https://ny.eater.com' },
+    { id:7,  title:'Try a new bakery',                          category:'bakery',   notes:'Bien Cuit, Mah Ze Dahr, Patisserie Chanson, Supermoon Bakehouse...',                     link:'' },
+    { id:8,  title:'Saturday morning pastry crawl',             category:'bakery',   notes:'Pick a neighborhood and hit 2–3 bakeries in a row.',                                     link:'' },
+    { id:9,  title:'See a Broadway show',                       category:'shows',    notes:'Check TKTS for same-day discounts, or splurge on something we really want to see.',      link:'https://www.tdf.org/nyc/7/TKTS-ticket-booths' },
+    { id:10, title:'Catch a live music show',                   category:'arts',     notes:"Baby's All Right, Music Hall of Williamsburg, Elsewhere — check Resident Advisor.",      link:'https://ra.co/events/us/newyork' },
+    { id:11, title:'Visit a gallery or art exhibition',         category:'arts',     notes:'New Museum, MoMA PS1, The Shed, or walk around Chelsea galleries on a Saturday.',        link:'' },
+    { id:12, title:'Explore a new neighborhood',                category:'explore',  notes:'Flushing, Ridgewood, Greenwood Heights, Kingsbridge, Rockaway Beach...',                 link:'' },
+    { id:13, title:'Wander around Governors Island',            category:'explore',  notes:'Free ferry on weekends. Rent bikes and just explore — picnic vibes.',                    link:'' },
+    { id:14, title:'Bathhouse day',                             category:'wellness', notes:'Russian & Turkish Baths in East Village or Aire Ancient Baths in Tribeca.',              link:'' },
+    { id:15, title:'Couples massage',                           category:'wellness', notes:'No special occasion needed. Just do it.',                                                 link:'' },
+    { id:16, title:'Impromptu train to upstate NY',             category:'daytrip',  notes:'Hudson or Beacon — hop on Metro-North with no plan. A gallery, or just walking.',        link:'' },
+    { id:17, title:'Day trip to Connecticut',                   category:'daytrip',  notes:"New Haven for Sally's Apizza? Or a coastal town like Mystic or Essex.",                  link:'' },
+    { id:18, title:'Free museum day',                           category:'free',     notes:'MoMA is free Fri 5–9pm. Brooklyn Museum first Saturday of the month.',                   link:'' },
+    { id:19, title:'Catch a free outdoor event',                category:'free',     notes:'Bryant Park movies, Shakespeare in the Park, SummerStage, Celebrate Brooklyn!',          link:'' },
+    { id:20, title:'Sneak into a hotel rooftop bar',            category:'free',     notes:'Walk in with confidence. Williamsburg Hotel, 1 Hotels, Pod 39...',                       link:'' },
+    { id:21, title:'Take a drawing class together',             category:'classes',  notes:'Look for a drop-in session — relaxed and fun, not too serious.',                         link:'' },
+    { id:22, title:'Learn ASL together',                        category:'classes',  notes:'Find a beginner workshop or evening class.',                                              link:'' },
+  ];
 
-const KEY = 'nyc-adventures-v1';
+  // ── STATE ────────────────────────────────────────
+  let items      = [];
+  let currentCat = null;
+  let catFilter  = 'all';
+  let editingId  = null;
+  let pickedCat  = 'food';
+  const KEY = 'nyc-adv-v2';
 
-function load() {
-  const raw = localStorage.getItem(KEY);
-  if (raw) {
-    items = JSON.parse(raw);
-  } else {
-    items = SEED.map(s => ({ ...s, status:'todo', dateCompleted:null, rating:null }));
-    save();
-  }
-}
-
-function save() {
-  localStorage.setItem(KEY, JSON.stringify(items));
-}
-
-function resetData() {
-  if (!confirm('Reset everything back to the default list? Your progress will be lost.')) return;
-  localStorage.removeItem(KEY);
-  load();
-  render();
-}
-
-// ── RENDER ────────────────────────────────────────────────
-function render() {
-  renderStats();
-  renderCatRow();
-  renderGrid();
-}
-
-function renderStats() {
-  const done  = items.filter(a => a.status === 'done').length;
-  const total = items.length;
-  document.getElementById('statsBar').innerHTML = `
-    <div class="stat">🗓️ <span class="stat-num">${total}</span> adventures total</div>
-    <div class="stat">✅ <span class="stat-num">${done}</span> done!</div>
-    <div class="stat">⏳ <span class="stat-num">${total - done}</span> still to go</div>
-  `;
-}
-
-function renderCatRow() {
-  const row = document.getElementById('catRow');
-  const label = row.querySelector('.filter-label');
-  row.innerHTML = '';
-  row.appendChild(label);
-
-  const all = document.createElement('button');
-  all.className = 'pill' + (filterCat === 'all' ? ' status-active' : '');
-  all.textContent = 'All';
-  all.onclick = () => { filterCat = 'all'; render(); };
-  row.appendChild(all);
-
-  Object.entries(CATS).forEach(([key, cat]) => {
-    const btn = document.createElement('button');
-    const isActive = filterCat === key;
-    btn.className = 'pill';
-    btn.textContent = cat.emoji + ' ' + cat.label;
-    btn.style.cssText = isActive
-      ? `background:${cat.color}; color:white; border-color:${cat.color};`
-      : '';
-    btn.onclick = () => { filterCat = key; render(); };
-    row.appendChild(btn);
-  });
-}
-
-function renderGrid() {
-  const grid = document.getElementById('grid');
-  const visible = items.filter(a => {
-    const sOk = filterStatus === 'all' || a.status === filterStatus;
-    const cOk = filterCat === 'all' || a.category === filterCat;
-    return sOk && cOk;
-  });
-
-  if (!visible.length) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">🌟</div><p>Nothing here yet!<br>Add an adventure to get started.</p></div>`;
-    return;
+  function load() {
+    const raw = localStorage.getItem(KEY);
+    items = raw ? JSON.parse(raw) : SEED.map(s => ({ ...s, status:'todo', dateCompleted:null, rating:null }));
+    if (!raw) save();
   }
 
-  grid.innerHTML = visible.map((a, i) => cardHTML(a, i * 35)).join('');
-}
+  function save() { localStorage.setItem(KEY, JSON.stringify(items)); }
 
-function cardHTML(a, delay) {
-  const cat = CATS[a.category] || CATS.food;
-  const isDone = a.status === 'done';
+  // ── WHEEL ────────────────────────────────────────
+  function showWheel() {
+    currentCat = null;
+    document.getElementById('catView').classList.add('hidden');
+    document.getElementById('wheelView').classList.remove('hidden');
+    renderWheel();
+  }
 
-  const starsHTML = isDone ? `
-    <div class="stars">
-      ${[1,2,3,4,5].map(n =>
-        `<span class="star ${(a.rating||0)>=n?'lit':''}" onclick="rate(${a.id},${n})">★</span>`
-      ).join('')}
-    </div>` : '';
+  function renderWheel() {
+    const todo  = items.filter(a => a.status === 'todo').length;
+    const done  = items.filter(a => a.status === 'done').length;
+    const total = items.length;
 
-  return `
-    <div class="card ${isDone?'done':''}"
-         style="--cc:${cat.color}; animation-delay:${delay}ms"
-         data-id="${a.id}">
-      <div class="card-top">
-        <span class="card-emoji">${cat.emoji}</span>
-        <div class="card-menu">
-          <button class="icon-btn" onclick="openEdit(${a.id})" title="Edit">✏️</button>
-          <button class="icon-btn del" onclick="del(${a.id})" title="Delete">🗑️</button>
+    document.getElementById('centerTodo').textContent = todo;
+    document.getElementById('statsInline').innerHTML  =
+      `<span><b>${total}</b> adventures</span>
+       <span><b>${done}</b> done</span>
+       <span><b>${todo}</b> to go</span>`;
+
+    const wrap = document.getElementById('wheelWrap');
+    const size = Math.min(
+      window.innerWidth  * 0.88,
+      window.innerHeight * 0.56,
+      500
+    );
+    wrap.style.width  = size + 'px';
+    wrap.style.height = size + 'px';
+
+    // Clear old nodes
+    wrap.querySelectorAll('.wheel-node').forEach(n => n.remove());
+
+    const W  = size, H = size;
+    const cx = W / 2, cy = H / 2;
+    const r  = W * 0.37;
+
+    const centerSize   = W * 0.23;
+    const nodeSize     = W * 0.165;
+    const nodeFontSize = nodeSize * 0.28;
+    const countSize    = nodeSize * 0.42;
+
+    const center = document.getElementById('wheelCenter');
+    center.style.width  = centerSize + 'px';
+    center.style.height = centerSize + 'px';
+    document.getElementById('centerTodo').style.fontSize = (centerSize * 0.38) + 'px';
+    document.getElementById('centerLabel').style.fontSize = (centerSize * 0.13) + 'px';
+
+    const svg  = document.getElementById('wheelSvg');
+    svg.innerHTML = '';
+
+    const keys = Object.keys(CATS);
+    keys.forEach((key, i) => {
+      const cat   = CATS[key];
+      const angle = (i * (360 / keys.length) - 90) * Math.PI / 180;
+      const nx    = cx + r * Math.cos(angle);
+      const ny    = cy + r * Math.sin(angle);
+
+      // Spoke: from edge of center circle to edge of node
+      const cr = centerSize / 2, nr = nodeSize / 2;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', cx + cr * Math.cos(angle));
+      line.setAttribute('y1', cy + cr * Math.sin(angle));
+      line.setAttribute('x2', nx - nr * Math.cos(angle));
+      line.setAttribute('y2', ny - nr * Math.sin(angle));
+      line.setAttribute('stroke', '#D0C0AE');
+      line.setAttribute('stroke-width', '1');
+      line.setAttribute('stroke-dasharray', '3 5');
+      svg.appendChild(line);
+
+      // Node
+      const catItems = items.filter(a => a.category === key);
+      const catTodo  = catItems.filter(a => a.status === 'todo').length;
+      const catDone  = catItems.filter(a => a.status === 'done').length;
+
+      const node = document.createElement('div');
+      node.className = 'wheel-node';
+      node.style.cssText = `
+        left: ${nx}px; top: ${ny}px;
+        width: ${nodeSize}px; height: ${nodeSize}px;
+        --node-color: ${cat.color};
+        padding: ${nodeSize * 0.08}px;
+      `;
+      node.innerHTML = `
+        <div class="node-count" style="font-size:${countSize}px">${catTodo}</div>
+        <div class="node-name" style="font-size:${nodeFontSize}px">${cat.label}</div>
+        ${catDone > 0 ? `<div class="node-done" style="font-size:${nodeFontSize * 0.82}px">${catDone} done</div>` : ''}
+      `;
+      node.onclick = () => showCat(key);
+      wrap.appendChild(node);
+    });
+  }
+
+  // ── CATEGORY VIEW ────────────────────────────────
+  function showCat(key) {
+    currentCat = key;
+    catFilter  = 'all';
+    document.getElementById('wheelView').classList.add('hidden');
+    document.getElementById('catView').classList.remove('hidden');
+    document.querySelectorAll('.cf-pill').forEach(p =>
+      p.classList.toggle('active', p.dataset.cf === 'all')
+    );
+    renderCatView();
+  }
+
+  function renderCatView() {
+    const cat      = CATS[currentCat];
+    const catItems = items.filter(a => a.category === currentCat);
+    const todo     = catItems.filter(a => a.status === 'todo').length;
+    const done     = catItems.filter(a => a.status === 'done').length;
+
+    document.getElementById('catTitle').textContent    = cat.label;
+    document.getElementById('catSubtitle').textContent = `${todo} to do · ${done} done`;
+    document.documentElement.style.setProperty('--node-color', cat.color);
+
+    let visible = catItems.filter(a => catFilter === 'all' || a.status === catFilter);
+    visible.sort((a, b) => a.status === b.status ? 0 : a.status === 'todo' ? -1 : 1);
+
+    const list = document.getElementById('activityList');
+    if (!visible.length) {
+      list.innerHTML = `<div class="empty-row">Nothing here yet — add one above.</div>`;
+      return;
+    }
+    list.innerHTML = visible.map((a, i) => rowHTML(a, i * 28)).join('');
+  }
+
+  function rowHTML(a, delay) {
+    const cat    = CATS[a.category] || CATS.food;
+    const isDone = a.status === 'done';
+
+    const stars = isDone ? `<div class="stars-row">${
+      [1,2,3,4,5].map(n =>
+        `<span class="star ${(a.rating||0)>=n?'lit':''}" onclick="rate(${a.id},${n})">&#9733;</span>`
+      ).join('')
+    }</div>` : '';
+
+    const date = a.dateCompleted
+      ? `<span class="activity-date">${a.dateCompleted}</span>` : '';
+
+    return `
+      <div class="activity-row ${isDone?'done':''}"
+           style="--node-color:${cat.color}; animation-delay:${delay}ms">
+        <div class="status-dot" onclick="toggleDone(${a.id})"></div>
+        <div class="activity-body">
+          <div class="activity-title" onclick="toggleDone(${a.id})">${esc(a.title)}</div>
+          ${a.notes ? `<div class="activity-notes">${esc(a.notes)}</div>` : ''}
+          ${a.link  ? `<a href="${esc(a.link)}" target="_blank" rel="noopener" class="activity-link">&#8599; ${linkHost(a.link)}</a>` : ''}
+          ${isDone  ? `<div class="activity-meta">${stars}${date}</div>` : ''}
         </div>
-      </div>
-      <span class="cat-tag">${cat.label}</span>
-      <div class="card-title">${esc(a.title)}</div>
-      ${a.notes ? `<div class="card-notes">${esc(a.notes)}</div>` : ''}
-      ${a.link  ? `<a href="${esc(a.link)}" target="_blank" rel="noopener" class="card-link">🔗 Visit site</a>` : ''}
-      ${starsHTML}
-      <div class="card-footer">
-        <button class="check-btn" onclick="toggleDone(${a.id})">
-          ${isDone ? '✓ Done!' : '○ Mark done'}
-        </button>
-        ${a.dateCompleted ? `<span class="card-date">✓ ${a.dateCompleted}</span>` : ''}
-      </div>
-    </div>`;
-}
-
-function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── ACTIONS ───────────────────────────────────────────────
-function toggleDone(id) {
-  const a = items.find(x => x.id === id);
-  if (!a) return;
-  if (a.status === 'todo') {
-    a.status = 'done';
-    a.dateCompleted = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    confetti();
-  } else {
-    a.status = 'todo';
-    a.dateCompleted = null;
-    a.rating = null;
+        <div class="activity-actions">
+          <button class="row-btn" onclick="openEdit(${a.id})" title="Edit">&#9998;</button>
+          <button class="row-btn del" onclick="del(${a.id})" title="Delete">&#10005;</button>
+        </div>
+      </div>`;
   }
-  save(); render();
-}
 
-function rate(id, n) {
-  const a = items.find(x => x.id === id);
-  if (!a) return;
-  a.rating = n;
-  save(); render();
-}
-
-function del(id) {
-  if (!confirm('Remove this adventure?')) return;
-  items = items.filter(x => x.id !== id);
-  save(); render();
-}
-
-// ── MODAL ─────────────────────────────────────────────────
-function buildCatPicker() {
-  document.getElementById('catPicker').innerHTML = Object.entries(CATS).map(([key, cat]) => {
-    const sel = pickedCat === key;
-    const bg  = sel ? `background:${cat.color}; border-color:${cat.color};` : '';
-    const col = sel ? 'color:white;' : `color:${cat.color};`;
-    return `<div class="cat-opt ${sel?'sel':''}" style="${bg}${col}" onclick="pickCat('${key}')">
-      <span class="co-emoji">${cat.emoji}</span>
-      <span style="${sel?'color:white;':''}">${cat.label}</span>
-    </div>`;
-  }).join('');
-}
-
-function pickCat(key) { pickedCat = key; buildCatPicker(); }
-
-function openAdd() {
-  editingId = null;
-  pickedCat = 'food';
-  document.getElementById('formTitle').textContent = '✨ New Adventure';
-  document.getElementById('fTitle').value = '';
-  document.getElementById('fNotes').value = '';
-  document.getElementById('fLink').value  = '';
-  buildCatPicker();
-  document.getElementById('formOverlay').classList.remove('hidden');
-  setTimeout(() => document.getElementById('fTitle').focus(), 100);
-}
-
-function openEdit(id) {
-  const a = items.find(x => x.id === id);
-  if (!a) return;
-  editingId = id;
-  pickedCat = a.category;
-  document.getElementById('formTitle').textContent = '✏️ Edit Adventure';
-  document.getElementById('fTitle').value = a.title;
-  document.getElementById('fNotes').value = a.notes || '';
-  document.getElementById('fLink').value  = a.link  || '';
-  buildCatPicker();
-  document.getElementById('formOverlay').classList.remove('hidden');
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.add('hidden');
-}
-
-function saveItem() {
-  const title = document.getElementById('fTitle').value.trim();
-  if (!title) { document.getElementById('fTitle').focus(); return; }
-
-  if (editingId) {
-    const a = items.find(x => x.id === editingId);
-    Object.assign(a, {
-      title,
-      category: pickedCat,
-      notes: document.getElementById('fNotes').value.trim(),
-      link:  document.getElementById('fLink').value.trim(),
-    });
-  } else {
-    items.push({
-      id: Date.now(),
-      title,
-      category: pickedCat,
-      notes: document.getElementById('fNotes').value.trim(),
-      link:  document.getElementById('fLink').value.trim(),
-      status: 'todo',
-      dateCompleted: null,
-      rating: null,
-    });
+  function linkHost(url) {
+    try { return new URL(url).hostname.replace('www.',''); } catch { return 'link'; }
   }
-  save();
-  closeModal('formOverlay');
-  render();
-}
 
-// ── SURPRISE ME ───────────────────────────────────────────
-function surpriseMe() {
-  const pool = items.filter(a => a.status === 'todo');
-  if (!pool.length) { alert("You've done everything! Add more adventures 🎉"); return; }
-  const pick = pool[Math.floor(Math.random() * pool.length)];
-  const cat  = CATS[pick.category] || CATS.food;
-  document.getElementById('sEmoji').textContent = cat.emoji;
-  document.getElementById('sTag').textContent   = cat.label;
-  document.getElementById('sTag').style.background = cat.color;
-  document.getElementById('sTitle').textContent  = pick.title;
-  document.getElementById('sNotes').textContent  = pick.notes || '';
-  document.getElementById('surpriseOverlay').classList.remove('hidden');
-}
-
-// ── CONFETTI ──────────────────────────────────────────────
-function confetti() {
-  const layer  = document.getElementById('confetti-layer');
-  const colors = ['#B5714A','#C4906A','#9E6E8A','#7A6E9E','#5E8C6A','#C49A5A','#5E8EA0','#A85C4A'];
-  for (let i = 0; i < 90; i++) {
-    const el = document.createElement('div');
-    el.className = 'cf';
-    const size = Math.random() * 9 + 5;
-    el.style.cssText = `
-      left: ${Math.random()*100}vw;
-      top: -12px;
-      width: ${size}px; height: ${size}px;
-      background: ${colors[Math.floor(Math.random()*colors.length)]};
-      border-radius: ${Math.random()>.5?'50%':'3px'};
-      animation-duration: ${Math.random()*2+1.4}s;
-      animation-delay: ${Math.random()*0.6}s;
-    `;
-    layer.appendChild(el);
-    el.addEventListener('animationend', () => el.remove());
+  function esc(s) {
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-}
 
-// ── STATUS FILTER ─────────────────────────────────────────
-document.getElementById('statusRow').addEventListener('click', e => {
-  const btn = e.target.closest('[data-s]');
-  if (!btn) return;
-  filterStatus = btn.dataset.s;
-  document.querySelectorAll('[data-s]').forEach(b => b.classList.remove('status-active'));
-  btn.classList.add('status-active');
-  render();
-});
+  // ── ACTIONS ──────────────────────────────────────
+  function toggleDone(id) {
+    const a = items.find(x => x.id === id);
+    if (!a) return;
+    if (a.status === 'todo') {
+      a.status = 'done';
+      a.dateCompleted = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      confetti();
+    } else {
+      a.status = 'todo';
+      a.dateCompleted = null;
+      a.rating = null;
+    }
+    save();
+    if (currentCat) renderCatView(); else renderWheel();
+  }
 
-// ── CLOSE OVERLAY ON BG CLICK ─────────────────────────────
-document.querySelectorAll('.overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) o.classList.add('hidden'); });
-});
+  function rate(id, n) {
+    const a = items.find(x => x.id === id);
+    if (!a) return;
+    a.rating = n; save(); renderCatView();
+  }
 
-// ── KEYBOARD ──────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
-});
+  function del(id) {
+    if (!confirm('Remove this adventure?')) return;
+    items = items.filter(x => x.id !== id);
+    save();
+    if (currentCat) renderCatView(); else renderWheel();
+  }
 
-// ── INIT ──────────────────────────────────────────────────
-load();
-render();
-</script>
+  // ── MODAL ────────────────────────────────────────
+  function buildCatPicker() {
+    document.getElementById('catPicker').innerHTML =
+      Object.entries(CATS).map(([key, cat]) => {
+        const sel = pickedCat === key;
+        return `<div class="cat-opt${sel?' sel':''}"
+                     style="${sel ? `background:${cat.color}; border-color:${cat.color};` : ''}"
+                     onclick="pickCat('${key}')">${cat.label}</div>`;
+      }).join('');
+  }
+
+  function pickCat(key) { pickedCat = key; buildCatPicker(); }
+
+  function openAdd(cat) {
+    editingId = null;
+    pickedCat = cat || currentCat || 'food';
+    document.getElementById('formTitle').textContent = 'New Adventure';
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fNotes').value = '';
+    document.getElementById('fLink').value  = '';
+    buildCatPicker();
+    document.getElementById('formOverlay').classList.remove('hidden');
+    setTimeout(() => document.getElementById('fTitle').focus(), 120);
+  }
+
+  function openEdit(id) {
+    const a = items.find(x => x.id === id);
+    if (!a) return;
+    editingId = id; pickedCat = a.category;
+    document.getElementById('formTitle').textContent = 'Edit Adventure';
+    document.getElementById('fTitle').value = a.title;
+    document.getElementById('fNotes').value = a.notes || '';
+    document.getElementById('fLink').value  = a.link  || '';
+    buildCatPicker();
+    document.getElementById('formOverlay').classList.remove('hidden');
+  }
+
+  function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+  function saveItem() {
+    const title = document.getElementById('fTitle').value.trim();
+    if (!title) { document.getElementById('fTitle').focus(); return; }
+    if (editingId) {
+      Object.assign(items.find(x => x.id === editingId), {
+        title, category: pickedCat,
+        notes: document.getElementById('fNotes').value.trim(),
+        link:  document.getElementById('fLink').value.trim(),
+      });
+    } else {
+      items.push({
+        id: Date.now(), title, category: pickedCat,
+        notes: document.getElementById('fNotes').value.trim(),
+        link:  document.getElementById('fLink').value.trim(),
+        status: 'todo', dateCompleted: null, rating: null,
+      });
+    }
+    save(); closeModal('formOverlay');
+    if (currentCat) renderCatView(); else renderWheel();
+  }
+
+  // ── SURPRISE ME ──────────────────────────────────
+  function surpriseMe() {
+    const pool = items.filter(a => a.status === 'todo');
+    if (!pool.length) { alert("You've done everything! Add more adventures."); return; }
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    const cat  = CATS[pick.category] || CATS.food;
+    document.getElementById('sCat').textContent  = cat.label;
+    document.getElementById('sCat').style.background = cat.color;
+    document.getElementById('sTitle').textContent = pick.title;
+    document.getElementById('sNotes').textContent = pick.notes || '';
+    document.getElementById('surpriseOverlay').classList.remove('hidden');
+  }
+
+  // ── CONFETTI ─────────────────────────────────────
+  function confetti() {
+    const layer  = document.getElementById('confetti-layer');
+    const colors = ['#B5714A','#C4906A','#9E6E8A','#7A6E9E','#5E8C6A','#C49A5A','#5E8EA0'];
+    for (let i = 0; i < 60; i++) {
+      const el = document.createElement('div');
+      el.className = 'cf';
+      const s = Math.random() * 7 + 4;
+      el.style.cssText = `
+        left:${Math.random()*100}vw; top:-10px;
+        width:${s}px; height:${s}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        border-radius:${Math.random()>.5?'50%':'2px'};
+        animation-duration:${Math.random()*2+1.4}s;
+        animation-delay:${Math.random()*0.5}s;
+      `;
+      layer.appendChild(el);
+      el.addEventListener('animationend', () => el.remove());
+    }
+  }
+
+  // ── EVENTS ───────────────────────────────────────
+  document.getElementById('catFilters').addEventListener('click', e => {
+    const btn = e.target.closest('.cf-pill');
+    if (!btn) return;
+    catFilter = btn.dataset.cf;
+    document.querySelectorAll('.cf-pill').forEach(p =>
+      p.classList.toggle('active', p === btn)
+    );
+    renderCatView();
+  });
+
+  document.querySelectorAll('.overlay').forEach(o =>
+    o.addEventListener('click', e => { if (e.target === o) o.classList.add('hidden'); })
+  );
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape')
+      document.querySelectorAll('.overlay').forEach(o => o.classList.add('hidden'));
+  });
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (!document.getElementById('wheelView').classList.contains('hidden')) renderWheel();
+    }, 150);
+  });
+
+  // ── INIT ─────────────────────────────────────────
+  load();
+  showWheel();
+  </script>
 </body>
 </html>
