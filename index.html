@@ -150,26 +150,12 @@
       box-shadow: var(--shadow-lg);
     }
 
-    .node-count {
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      line-height: 1;
-      color: var(--node-color, var(--text-mid));
-    }
-
     .node-name {
       font-size: 0.62rem;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-mid);
-      line-height: 1.2;
-      margin-top: 0.15rem;
-    }
-
-    .node-done {
-      font-size: 0.52rem;
-      color: #C49A5A;
-      margin-top: 0.1rem;
-      font-weight: 400;
+      line-height: 1.3;
+      text-align: center;
     }
 
     /* ── WHEEL FOOTER ────────────────────────────── */
@@ -743,7 +729,7 @@
     currentCat = null;
     document.getElementById('catView').classList.add('hidden');
     document.getElementById('wheelView').classList.remove('hidden');
-    renderWheel();
+    requestAnimationFrame(renderWheel);
   }
 
   function renderWheel() {
@@ -751,9 +737,10 @@
     const done  = items.filter(a => a.status === 'done').length;
     const total = items.length;
 
-    document.getElementById('centerTodo').textContent = todo;
+    document.getElementById('centerTodo').textContent = done;
+    document.getElementById('centerLabel').textContent = done === 1 ? 'adventure done' : 'adventures done';
     document.getElementById('statsInline').innerHTML  =
-      `<span><b>${total}</b> adventures</span>
+      `<span><b>${total}</b> total</span>
        <span><b>${done}</b> done</span>
        <span><b>${todo}</b> to go</span>`;
 
@@ -807,10 +794,6 @@
       svg.appendChild(line);
 
       // Node
-      const catItems = items.filter(a => a.category === key);
-      const catTodo  = catItems.filter(a => a.status === 'todo').length;
-      const catDone  = catItems.filter(a => a.status === 'done').length;
-
       const node = document.createElement('div');
       node.className = 'wheel-node';
       node.style.cssText = `
@@ -820,9 +803,7 @@
         padding: ${nodeSize * 0.08}px;
       `;
       node.innerHTML = `
-        <div class="node-count" style="font-size:${countSize}px">${catTodo}</div>
         <div class="node-name" style="font-size:${nodeFontSize}px">${cat.label}</div>
-        ${catDone > 0 ? `<div class="node-done" style="font-size:${nodeFontSize * 0.82}px">${catDone} done</div>` : ''}
       `;
       node.onclick = () => showCat(key);
       wrap.appendChild(node);
@@ -1056,7 +1037,7 @@
 
   // ── INIT ─────────────────────────────────────────
   load();
-  showWheel();
+  requestAnimationFrame(showWheel);
   </script>
 </body>
 </html>
