@@ -5,36 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>our nyc adventure log</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:         #E8E0D6;
-      --surface:    #EDE6DC;
-      --card:       #F5F0E8;
-      --text:       #261810;
-      --text-mid:   #7A6858;
-      --text-light: #B0A090;
-      --border:     #D8CEBC;
-      --shadow-sm:  0 2px 8px rgba(38,24,16,0.06);
-      --shadow:     0 4px 16px rgba(38,24,16,0.09);
-      --shadow-lg:  0 10px 32px rgba(38,24,16,0.13);
-      --accent:     #8A6A52;
+      --paper:      #EEE4CC;
+      --paper-l:    #E6DAC0;
+      --ink:        #1E1208;
+      --ink-mid:    #6A5038;
+      --ink-light:  #AA9272;
+      --rule:       rgba(160,130,80,0.13);
+      --border:     rgba(160,130,80,0.28);
+      --stamp:      #8A4828;
+      --shadow-sm:  0 1px 6px rgba(30,18,8,0.07);
+      --shadow:     0 3px 14px rgba(30,18,8,0.10);
+      --shadow-lg:  0 8px 28px rgba(30,18,8,0.14);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background: var(--paper);
+      color: var(--ink);
       overflow-x: hidden;
     }
 
-    /* ── APP LAYOUT ──────────────────────────────── */
-    .app {
-      display: flex;
-      min-height: 100vh;
+    /* paper grain overlay */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 1000;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
     }
+
+    /* ruled lines */
+    .ruled {
+      background-image: repeating-linear-gradient(
+        transparent, transparent 31px,
+        var(--rule) 31px, var(--rule) 32px
+      );
+    }
+
+    /* ── LAYOUT ──────────────────────────────────── */
+    .app { display: flex; min-height: 100vh; }
 
     /* ── LEFT PANEL ──────────────────────────────── */
     .left-panel {
@@ -43,49 +57,60 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2.5rem 2rem 1.75rem;
+      padding: 2.5rem 2rem 1.5rem;
       border-right: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: hidden;
-      background: var(--surface);
+      position: sticky; top: 0;
+      height: 100vh; overflow: hidden;
+      background: var(--paper-l);
     }
 
     .left-panel header {
       text-align: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       width: 100%;
     }
 
+    .eyebrow {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem; font-weight: 600;
+      color: var(--ink-light);
+      letter-spacing: 0.04em;
+      display: block;
+      margin-bottom: 0.1rem;
+    }
+
     .left-panel h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.4rem, 2.5vw, 1.85rem);
-      font-weight: 600;
+      font-family: 'Caveat', cursive;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
       letter-spacing: -0.01em;
-      color: var(--text);
-      margin-bottom: 0.25rem;
     }
 
     .subtitle {
-      font-size: 0.75rem;
-      color: var(--text-light);
-      letter-spacing: 0.03em;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 0.4rem;
+      display: block;
     }
 
     .stats-row {
       display: flex;
-      gap: 1rem;
+      gap: 1.25rem;
       justify-content: center;
       margin-top: 0.65rem;
-      font-size: 0.75rem;
-      color: var(--text-mid);
+      font-family: 'Caveat', cursive;
+      font-size: 0.95rem;
+      color: var(--ink-mid);
     }
 
     .stats-row b {
-      font-family: 'Playfair Display', serif;
-      font-size: 0.95rem;
-      color: var(--text);
+      font-size: 1.1rem;
+      color: var(--ink);
     }
 
     /* ── WHEEL ───────────────────────────────────── */
@@ -98,8 +123,7 @@
     #wheelSvg {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
+      pointer-events: none; z-index: 1;
     }
 
     #wheelCenter {
@@ -107,30 +131,29 @@
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      background: var(--card);
-      box-shadow: var(--shadow);
+      background: var(--paper);
+      box-shadow: var(--shadow), inset 0 0 0 1px var(--border);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      border: 1px solid var(--border);
       z-index: 3;
     }
 
     #centerNum {
-      font-family: 'Playfair Display', serif;
-      font-weight: 600;
-      color: var(--accent);
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      color: var(--stamp);
       line-height: 1;
     }
 
     #centerLabel {
-      font-size: 0.6rem;
-      color: var(--text-light);
-      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      color: var(--ink-light);
+      font-weight: 400;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       margin-top: 0.15rem;
     }
 
@@ -138,33 +161,35 @@
       position: absolute;
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      background: var(--card);
-      border: 1.5px solid var(--border);
-      box-shadow: var(--shadow-sm);
+      background: var(--paper);
+      box-shadow: var(--shadow-sm), inset 0 0 0 1px var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
       text-align: center;
       z-index: 2;
-      border-top-width: 3px;
     }
 
     .wheel-node:hover {
-      transform: translate(-50%, -50%) scale(1.12);
-      box-shadow: var(--shadow);
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: var(--shadow), inset 0 0 0 1.5px var(--border);
     }
 
     .wheel-node.active {
-      transform: translate(-50%, -50%) scale(1.08);
+      transform: translate(-50%, -50%) scale(1.06);
+      background: var(--ink);
       box-shadow: var(--shadow-lg);
     }
 
+    .wheel-node.active .node-name { color: var(--paper); }
+
     .node-name {
+      font-family: 'Caveat', cursive;
       font-weight: 600;
-      color: var(--text-mid);
-      line-height: 1.25;
+      color: var(--ink-mid);
+      line-height: 1.2;
       text-align: center;
       padding: 0 4px;
     }
@@ -181,37 +206,35 @@
     /* ── BUTTONS ─────────────────────────────────── */
     .ghost-btn {
       background: transparent;
-      border: 1.5px solid var(--border);
-      padding: 0.48rem 1.1rem;
-      border-radius: 50px;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1.1rem;
+      border-radius: 3px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.8rem; font-weight: 500;
-      color: var(--text-mid);
+      font-size: 0.78rem; font-weight: 500;
+      color: var(--ink-mid);
       cursor: pointer;
       transition: all 0.18s;
-      white-space: nowrap;
     }
 
     .ghost-btn:hover {
-      background: var(--card);
-      border-color: var(--text-mid);
-      color: var(--text);
+      background: rgba(30,18,8,0.05);
+      border-color: var(--ink-mid);
+      color: var(--ink);
     }
 
     .solid-btn {
-      background: var(--accent);
+      background: var(--ink);
       border: none;
-      padding: 0.48rem 1.1rem;
-      border-radius: 50px;
+      padding: 0.5rem 1.1rem;
+      border-radius: 3px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.8rem; font-weight: 600;
-      color: white;
+      font-size: 0.78rem; font-weight: 500;
+      color: var(--paper);
       cursor: pointer;
-      transition: opacity 0.18s, transform 0.18s;
-      white-space: nowrap;
+      transition: opacity 0.18s;
     }
 
-    .solid-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .solid-btn:hover { opacity: 0.82; }
 
     /* ── RIGHT PANEL ─────────────────────────────── */
     .right-panel {
@@ -219,39 +242,26 @@
       flex-shrink: 0;
       overflow-y: auto;
       height: 100vh;
-      padding: 2.5rem 2.5rem 4rem;
-      background: var(--bg);
+      padding: 2.5rem 3rem 4rem;
+      background: var(--paper);
     }
 
     /* ── PLACEHOLDER ─────────────────────────────── */
     #placeholder {
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100%;
-      min-height: 60vh;
-      text-align: center;
-      color: var(--text-light);
+      min-height: 80vh;
     }
 
-    .placeholder-deco {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: var(--border);
-      margin-bottom: 1rem;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0.5;
+    .placeholder-hint {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--ink-light);
+      font-weight: 400;
     }
 
-    #placeholder p {
-      font-size: 0.9rem;
-      font-style: italic;
-      max-width: 220px;
-      line-height: 1.6;
-    }
-
-    /* ── CATEGORY VIEW ───────────────────────────── */
+    /* ── CAT VIEW ────────────────────────────────── */
     #catView { display: none; }
     #catView.visible { display: block; }
 
@@ -260,76 +270,81 @@
       align-items: flex-start;
       justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.35rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
     }
 
     #catTitle {
       font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.1;
+      font-size: 2.2rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1;
     }
 
     #catSubtitle {
-      font-size: 0.78rem;
-      color: var(--text-light);
-      margin-top: 0.2rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      color: var(--ink-light);
+      margin-top: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     /* ── FILTERS ─────────────────────────────────── */
     #catFilters {
       display: flex;
-      gap: 0.4rem;
-      margin-bottom: 0.5rem;
+      gap: 0.75rem;
+      margin: 0.9rem 0 0.25rem;
       padding-bottom: 0.75rem;
       border-bottom: 1px solid var(--border);
     }
 
     .cf-pill {
-      padding: 0.28rem 0.8rem;
-      border-radius: 50px;
-      border: 1.5px solid transparent;
+      padding: 0;
+      border: none; background: none;
       font-family: 'Inter', sans-serif;
-      font-size: 0.76rem; font-weight: 500;
+      font-size: 0.72rem; font-weight: 500;
       cursor: pointer;
-      background: transparent;
-      color: var(--text-light);
-      transition: all 0.15s;
+      color: var(--ink-light);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: color 0.15s;
+      border-bottom: 1.5px solid transparent;
+      padding-bottom: 1px;
     }
 
-    .cf-pill:hover { color: var(--text); }
+    .cf-pill:hover { color: var(--ink-mid); }
+    .cf-pill.active { color: var(--ink); border-bottom-color: var(--ink); }
 
-    .cf-pill.active {
-      border-color: var(--node-color, var(--accent));
-      color: var(--node-color, var(--accent));
-    }
-
-    /* ── ACTIVITY LIST ───────────────────────────── */
+    /* ── ACTIVITY ROWS ───────────────────────────── */
     .activity-row {
       display: flex;
       align-items: flex-start;
       gap: 0.85rem;
-      padding: 0.9rem 0;
-      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--rule);
       animation: rowIn 0.2s ease backwards;
     }
 
     @keyframes rowIn {
-      from { opacity: 0; transform: translateX(-6px); }
-      to   { opacity: 1; transform: translateX(0); }
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .activity-row:last-child { border-bottom: none; }
 
     .status-dot {
-      width: 13px; height: 13px;
+      width: 12px; height: 12px;
       border-radius: 50%;
       border: 1.5px solid var(--node-color, var(--border));
       flex-shrink: 0;
-      margin-top: 3px;
+      margin-top: 4px;
       cursor: pointer;
       transition: all 0.15s;
+      background: transparent;
     }
 
     .activity-row.done .status-dot {
@@ -341,30 +356,54 @@
 
     .activity-body { flex: 1; min-width: 0; }
 
+    .activity-top {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
     .activity-title {
-      font-size: 0.9rem; font-weight: 500;
-      color: var(--text);
-      cursor: pointer; transition: color 0.15s;
-      line-height: 1.45;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--ink);
+      cursor: pointer;
+      transition: color 0.15s;
+      line-height: 1.4;
     }
 
     .activity-row.done .activity-title {
       text-decoration: line-through;
-      color: var(--text-light);
+      color: var(--ink-light);
     }
 
-    .activity-title:hover { color: var(--node-color, var(--accent)); }
+    .activity-title:hover { color: var(--node-color, var(--ink-mid)); }
+
+    .season-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6rem; font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 0.12rem 0.4rem;
+      border-radius: 2px;
+      color: white;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
 
     .activity-notes {
-      font-size: 0.77rem;
-      color: var(--text-light);
-      margin-top: 0.18rem;
-      line-height: 1.6;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem; font-weight: 300;
+      color: var(--ink-light);
+      margin-top: 0.22rem;
+      line-height: 1.65;
     }
 
     .activity-link {
-      font-size: 0.72rem;
-      color: var(--text-mid);
+      font-size: 0.7rem;
+      color: var(--ink-mid);
       text-decoration: none;
       font-weight: 500;
       display: inline-flex;
@@ -380,47 +419,51 @@
       gap: 0.55rem; margin-top: 0.3rem;
     }
 
-    .activity-date { font-size: 0.7rem; color: var(--text-light); }
+    .activity-date {
+      font-family: 'Caveat', cursive;
+      font-size: 0.82rem;
+      color: var(--ink-light);
+    }
 
     .stars-row { display: flex; gap: 1px; }
 
-    .star { font-size: 0.82rem; color: #D8C4AE; cursor: pointer; transition: all 0.1s; }
-    .star.lit { color: #D4943A; }
-    .star:hover { transform: scale(1.2); color: #D4943A; }
+    .star { font-size: 0.8rem; color: #C8B898; cursor: pointer; transition: all 0.1s; }
+    .star.lit { color: #B8882A; }
+    .star:hover { transform: scale(1.2); color: #B8882A; }
 
     .activity-actions {
       display: flex; gap: 0.2rem;
       opacity: 0; transition: opacity 0.15s;
-      flex-shrink: 0; padding-top: 1px;
+      flex-shrink: 0; padding-top: 2px;
     }
 
     .activity-row:hover .activity-actions { opacity: 1; }
 
     .row-btn {
-      width: 26px; height: 26px;
-      border-radius: 50%; border: none;
+      width: 24px; height: 24px;
+      border-radius: 2px; border: none;
       background: none; cursor: pointer;
       font-size: 0.72rem;
       display: flex; align-items: center; justify-content: center;
-      color: var(--text-light); transition: all 0.15s;
+      color: var(--ink-light); transition: all 0.15s;
     }
 
-    .row-btn:hover { background: var(--border); color: var(--text); }
-    .row-btn.del:hover { background: #F0DDD8; color: #A84A3A; }
+    .row-btn:hover { background: var(--border); color: var(--ink); }
+    .row-btn.del:hover { background: rgba(140,60,30,0.12); color: var(--stamp); }
 
     .empty-row {
       padding: 2.5rem 0;
       text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-light);
-      font-style: italic;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--ink-light);
     }
 
     /* ── MODALS ──────────────────────────────────── */
     .overlay {
       position: fixed; inset: 0;
-      background: rgba(42,26,14,0.22);
-      backdrop-filter: blur(6px);
+      background: rgba(30,18,8,0.3);
+      backdrop-filter: blur(4px);
       z-index: 300;
       display: flex; align-items: center; justify-content: center;
       padding: 1.5rem;
@@ -431,8 +474,8 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .modal {
-      background: var(--card);
-      border-radius: 18px;
+      background: var(--paper);
+      border-radius: 4px;
       padding: 1.75rem;
       width: 100%; max-width: 440px;
       max-height: 92vh; overflow-y: auto;
@@ -442,39 +485,39 @@
     }
 
     @keyframes modalPop {
-      from { opacity: 0; transform: scale(0.92) translateY(10px); }
+      from { opacity: 0; transform: scale(0.94) translateY(10px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .modal-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.35rem; font-weight: 600;
-      margin-bottom: 1.3rem; color: var(--text);
+      font-family: 'Caveat', cursive;
+      font-size: 1.5rem; font-weight: 700;
+      margin-bottom: 1.3rem; color: var(--ink);
     }
 
     .form-group { margin-bottom: 0.95rem; }
 
     .form-group label {
       display: block;
-      font-size: 0.7rem; font-weight: 600;
+      font-size: 0.68rem; font-weight: 500;
       text-transform: uppercase; letter-spacing: 0.07em;
-      color: var(--text-light); margin-bottom: 0.3rem;
+      color: var(--ink-light); margin-bottom: 0.3rem;
     }
 
     .form-group input,
     .form-group textarea {
       width: 100%;
-      padding: 0.58rem 0.85rem;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.88rem; color: var(--text);
+      font-size: 0.88rem; color: var(--ink);
       outline: none; transition: border-color 0.15s;
-      background: var(--surface);
+      background: rgba(255,255,255,0.4);
     }
 
     .form-group input:focus,
-    .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea:focus { border-color: var(--ink-mid); }
 
     .form-group textarea { resize: vertical; min-height: 70px; }
 
@@ -486,68 +529,71 @@
 
     .cat-opt {
       padding: 0.45rem 0.2rem;
-      border-radius: 7px;
-      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      border: 1px solid var(--border);
       cursor: pointer; transition: all 0.15s;
       text-align: center;
-      font-size: 0.65rem; font-weight: 500;
-      color: var(--text-mid); background: var(--surface);
+      font-family: 'Caveat', cursive;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--ink-mid); background: transparent;
     }
 
-    .cat-opt:hover { border-color: var(--text-mid); }
-    .cat-opt.sel { color: white; border-color: transparent; }
+    .cat-opt:hover { border-color: var(--ink-mid); color: var(--ink); }
+    .cat-opt.sel { color: var(--paper); border-color: transparent; }
 
     .modal-btns { display: flex; gap: 0.6rem; margin-top: 1.3rem; }
 
     .btn-cancel {
-      flex: 1; padding: 0.52rem 1rem;
-      border-radius: 50px; border: 1.5px solid var(--border);
+      flex: 1; padding: 0.5rem 1rem;
+      border-radius: 3px; border: 1px solid var(--border);
       font-family: 'Inter', sans-serif;
-      font-weight: 500; font-size: 0.84rem;
-      cursor: pointer; background: transparent; color: var(--text-mid);
+      font-weight: 500; font-size: 0.82rem;
+      cursor: pointer; background: transparent; color: var(--ink-mid);
       transition: all 0.15s;
     }
 
     .btn-cancel:hover { background: var(--border); }
 
     .btn-save {
-      flex: 2; padding: 0.52rem 1.2rem;
-      border-radius: 50px; border: none;
+      flex: 2; padding: 0.5rem 1.2rem;
+      border-radius: 3px; border: none;
       font-family: 'Inter', sans-serif;
-      font-weight: 600; font-size: 0.84rem;
+      font-weight: 500; font-size: 0.82rem;
       cursor: pointer; transition: opacity 0.15s;
-      background: var(--accent); color: white;
+      background: var(--ink); color: var(--paper);
     }
 
-    .btn-save:hover { opacity: 0.86; }
+    .btn-save:hover { opacity: 0.82; }
 
     /* ── SURPRISE MODAL ──────────────────────────── */
     .surprise-overlay .modal { max-width: 340px; text-align: center; }
 
     .s-eyebrow {
-      font-size: 0.68rem; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--text-light); margin-bottom: 0.5rem;
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem; color: var(--ink-light);
+      margin-bottom: 0.4rem; display: block;
     }
 
     .s-cat {
       display: inline-block;
-      font-size: 0.7rem; font-weight: 600;
-      padding: 0.22rem 0.75rem; border-radius: 50px;
-      color: white; margin-bottom: 0.65rem;
-      text-transform: uppercase; letter-spacing: 0.06em;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem; font-weight: 500;
+      padding: 0.22rem 0.75rem; border-radius: 2px;
+      color: white; margin-bottom: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.07em;
     }
 
     .s-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1.4rem; font-weight: 600;
+      font-size: 1.4rem; font-style: italic; font-weight: 500;
       margin-bottom: 0.5rem; line-height: 1.3;
-      color: var(--text);
+      color: var(--ink);
     }
 
     .s-notes {
-      font-size: 0.82rem; color: var(--text-light);
-      line-height: 1.6; margin-bottom: 1.2rem;
+      font-size: 0.82rem; font-weight: 300;
+      color: var(--ink-light);
+      line-height: 1.65; margin-bottom: 1.2rem;
     }
 
     .surprise-overlay .modal-btns { flex-direction: column; }
@@ -576,23 +622,9 @@
     /* ── MOBILE ──────────────────────────────────── */
     @media (max-width: 860px) {
       .app { flex-direction: column; }
-
-      .left-panel {
-        width: 100%;
-        position: static;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 1.75rem;
-      }
-
-      .right-panel {
-        width: 100%;
-        height: auto;
-        padding: 1.75rem 1.5rem 3rem;
-      }
-
-      #placeholder { min-height: 30vh; }
+      .left-panel { width: 100%; position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 1.75rem; }
+      .right-panel { width: 100%; height: auto; padding: 1.75rem 1.5rem 3rem; }
+      #placeholder { min-height: 20vh; }
     }
   </style>
 </head>
@@ -602,10 +634,10 @@
   <div class="app">
 
     <!-- ── LEFT PANEL ──────────────────────────────── -->
-    <div class="left-panel">
+    <div class="left-panel ruled">
       <header>
+        <span class="eyebrow">a journal of things to do</span>
         <h1>our nyc adventure log</h1>
-        <p class="subtitle">things we want to do &nbsp;·&nbsp; places to go</p>
         <div class="stats-row" id="statsRow"></div>
       </header>
 
@@ -624,19 +656,12 @@
     </div>
 
     <!-- ── RIGHT PANEL ─────────────────────────────── -->
-    <div class="right-panel">
+    <div class="right-panel ruled">
 
-      <!-- placeholder -->
       <div id="placeholder">
-        <div class="placeholder-deco">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
-          </svg>
-        </div>
-        <p>Select a category from the wheel to explore your adventures</p>
+        <span class="placeholder-hint">← pick a category to begin</span>
       </div>
 
-      <!-- category view -->
       <div id="catView">
         <div id="catHeader">
           <div>
@@ -659,7 +684,7 @@
   <!-- ── FORM MODAL ──────────────────────────────── -->
   <div class="overlay hidden" id="formOverlay">
     <div class="modal">
-      <div class="modal-title" id="formTitle">New Adventure</div>
+      <div class="modal-title" id="formTitle">new adventure</div>
       <div class="form-group">
         <label>Title</label>
         <input type="text" id="fTitle" placeholder="e.g. Eat at Din Tai Fung" />
@@ -670,11 +695,21 @@
       </div>
       <div class="form-group">
         <label>Notes</label>
-        <textarea id="fNotes" placeholder="Tips, reminders, why you want to do this..."></textarea>
+        <textarea id="fNotes" placeholder="Tips, details, why you want to do this..."></textarea>
       </div>
       <div class="form-group">
         <label>Link (optional)</label>
         <input type="url" id="fLink" placeholder="https://..." />
+      </div>
+      <div class="form-group">
+        <label>Season</label>
+        <select id="fSeason" style="width:100%; padding:0.55rem 0.8rem; border:1px solid var(--border); border-radius:3px; font-family:Inter,sans-serif; font-size:0.88rem; background:rgba(255,255,255,0.4); color:var(--ink); outline:none;">
+          <option value="any">Any time</option>
+          <option value="spring">Spring</option>
+          <option value="summer">Summer</option>
+          <option value="fall">Fall</option>
+          <option value="winter">Winter</option>
+        </select>
       </div>
       <div class="modal-btns">
         <button class="btn-cancel" onclick="closeModal('formOverlay')">Cancel</button>
@@ -686,12 +721,12 @@
   <!-- ── SURPRISE MODAL ──────────────────────────── -->
   <div class="overlay hidden surprise-overlay" id="surpriseOverlay">
     <div class="modal">
-      <div class="s-eyebrow">tonight, let's...</div>
+      <span class="s-eyebrow">tonight, let's...</span>
       <div class="s-cat" id="sCat"></div>
       <div class="s-title" id="sTitle"></div>
       <div class="s-notes" id="sNotes"></div>
       <div class="modal-btns">
-        <button class="solid-btn" onclick="surpriseMe()" style="border-radius:50px; padding:0.52rem; width:100%;">pick again</button>
+        <button class="solid-btn" onclick="surpriseMe()" style="border-radius:3px; padding:0.52rem; width:100%;">pick again</button>
         <button class="btn-cancel" onclick="closeModal('surpriseOverlay')">close</button>
       </div>
     </div>
@@ -700,80 +735,87 @@
   <script>
   // ── CATEGORIES ──────────────────────────────────
   const CATS = {
-    cinema:   { label: 'Cinema',   color: '#9A6848' },
-    food:     { label: 'Food',     color: '#924840' },
-    bakery:   { label: 'Bakeries', color: '#A87A58' },
-    arts:     { label: 'Arts',     color: '#6A6090' },
-    shows:    { label: 'Shows',    color: '#885878' },
-    explore:  { label: 'Explore',  color: '#4E7A60' },
-    wellness: { label: 'Wellness', color: '#9A8048' },
-    daytrip:  { label: 'Day Trip', color: '#487890' },
-    free:     { label: 'Free',     color: '#607850' },
-    classes:  { label: 'Classes',  color: '#486080' },
+    cinema:   { label: 'Cinema',   color: '#7A5840' },
+    food:     { label: 'Food',     color: '#8A4838' },
+    bakery:   { label: 'Bakeries', color: '#9A7848' },
+    arts:     { label: 'Arts',     color: '#585888' },
+    shows:    { label: 'Shows',    color: '#784858' },
+    explore:  { label: 'Explore',  color: '#3E6848' },
+    wellness: { label: 'Wellness', color: '#886838' },
+    daytrip:  { label: 'Day Trip', color: '#386878' },
+    free:     { label: 'Free',     color: '#486038' },
+    classes:  { label: 'Classes',  color: '#385870' },
+  };
+
+  const SEASON_COLORS = {
+    spring: '#5E8848',
+    summer: '#A87828',
+    fall:   '#9A5828',
+    winter: '#486888',
   };
 
   // ── DATA ─────────────────────────────────────────
   const SEED = [
-    // cinema
-    { id:1,  title:'Catch a film at an indie theater',          category:'cinema',   notes:'Check Screenslate.com for the best screenings & showtimes around the city.',             link:'https://www.screenslate.com' },
-    { id:2,  title:'Movie night at Metrograph',                 category:'cinema',   notes:'Cozy theater on Ludlow St with great programming, a bar, and a little restaurant.',      link:'' },
-    { id:3,  title:'IFC Center double feature',                 category:'cinema',   notes:'Village staple — always something interesting on. Stay for two.',                         link:'' },
-    { id:4,  title:'Nitehawk Cinema',                           category:'cinema',   notes:'Dine-in theater in Williamsburg — order food and drinks during the movie.',               link:'' },
-    { id:5,  title:'Anthology Film Archives',                   category:'cinema',   notes:'Avant-garde and experimental cinema in the East Village. Truly offbeat programming.',    link:'' },
-    { id:6,  title:'BAM Rose Cinemas',                          category:'cinema',   notes:'Brooklyn Academy of Music — thoughtful programming, beautiful old building.',            link:'' },
-    // food
-    { id:7,  title:'Eat at Din Tai Fung',                       category:'food',     notes:'Soup dumplings are life. Go on a weekday to avoid the worst of the wait.',               link:'' },
-    { id:8,  title:'Endless pasta night at Olive Garden',       category:'food',     notes:'Soup + salad + endless pasta. Treat yourselves, ironically or not.',                     link:'' },
-    { id:9,  title:'Find a new local restaurant together',      category:'food',     notes:'Pick somewhere neither of us has been — browse Eater NY for ideas.',                     link:'https://ny.eater.com' },
-    { id:10, title:'Peter Luger Steak House',                   category:'food',     notes:'Cash only. The porterhouse. Worth every penny and every minute of the wait.',            link:'' },
-    { id:11, title:'Lilia in Williamsburg',                     category:'food',     notes:'The pasta is incredible. Hard to get a reservation — use Resy and be persistent.',       link:'' },
-    { id:12, title:"Xi'an Famous Foods",                        category:'food',     notes:'Spicy cumin lamb hand-pulled noodles. One of the best bites in NYC.',                    link:'' },
-    { id:13, title:"Russ & Daughters Cafe",                     category:'food',     notes:'Classic NYC Jewish deli on Houston. Get the Classic board and a Dr. Brown.',             link:'' },
-    // bakery
-    { id:14, title:'Try a new bakery',                          category:'bakery',   notes:'Bien Cuit, Mah Ze Dahr, Patisserie Chanson, Supermoon Bakehouse...',                     link:'' },
-    { id:15, title:'Saturday morning pastry crawl',             category:'bakery',   notes:'Pick a neighborhood and hit 2–3 bakeries in a row.',                                     link:'' },
-    { id:16, title:'Breads Bakery for the chocolate babka',     category:'bakery',   notes:'Union Square location. Get there early — it sells out. Best babka in the city.',         link:'' },
-    { id:17, title:'Dominique Ansel Bakery',                    category:'bakery',   notes:'SoHo institution. Whatever seasonal thing they have will be worth it.',                  link:'' },
-    { id:18, title:'Balthazar Bakery',                          category:'bakery',   notes:'Get a baguette or croissant and wander around SoHo. Very Parisian of you.',              link:'' },
-    // shows
-    { id:19, title:'See a Broadway show',                       category:'shows',    notes:'Check TKTS for same-day discounts, or splurge on something we really want to see.',      link:'https://www.tdf.org/nyc/7/TKTS-ticket-booths' },
-    { id:20, title:'Catch an off-Broadway show',                category:'shows',    notes:'Playwrights Horizons, Atlantic Theater Company, Signature — often more adventurous.',    link:'' },
-    { id:21, title:'Comedy night at The Comedy Cellar',         category:'shows',    notes:'MacDougal St institution. Famous for surprise drop-ins. Go on a weeknight.',             link:'' },
-    { id:22, title:'Jazz at Village Vanguard',                  category:'shows',    notes:'Legendary West Village jazz club. Go for a late set and just sink in.',                  link:'' },
-    // arts
-    { id:23, title:'Catch a live music show',                   category:'arts',     notes:"Baby's All Right, Music Hall of Williamsburg, Elsewhere — check Resident Advisor.",      link:'https://ra.co/events/us/newyork' },
-    { id:24, title:'Visit a gallery or art exhibition',         category:'arts',     notes:'New Museum, MoMA PS1, The Shed, or walk around Chelsea galleries on a Saturday.',        link:'' },
-    { id:25, title:'Spend a day at The Met',                    category:'arts',     notes:'Pay what you wish for NY residents. So big you could go 10 times and find something new.', link:'' },
-    { id:26, title:'Visit the Whitney Museum',                  category:'arts',     notes:'American art with incredible views of the Hudson. Great rotating exhibitions.',          link:'' },
-    { id:27, title:'Open mic at Nuyorican Poets Cafe',          category:'arts',     notes:'East Village legend. Friday slam nights are electric — no two are the same.',            link:'' },
-    // explore
-    { id:28, title:'Explore a new neighborhood',                category:'explore',  notes:'Flushing, Ridgewood, Greenwood Heights, Kingsbridge, Rockaway Beach...',                 link:'' },
-    { id:29, title:'Wander around Governors Island',            category:'explore',  notes:'Free ferry on weekends. Rent bikes and explore — bring a picnic.',                       link:'' },
-    { id:30, title:'Walk the High Line end to end',             category:'explore',  notes:'Start at 34th St and walk all the way down. Stop for food in the Meatpacking District.', link:'' },
-    { id:31, title:'Spend a day in DUMBO',                      category:'explore',  notes:'Walk the bridge, explore the cobblestone streets, grab food, watch the skyline.',        link:'' },
-    { id:32, title:'Visit the Cloisters',                       category:'explore',  notes:'Medieval art museum perched above the Hudson in Washington Heights. Otherworldly.',       link:'' },
-    // wellness
-    { id:33, title:'Bathhouse day',                             category:'wellness', notes:'Russian & Turkish Baths in East Village or Aire Ancient Baths in Tribeca.',              link:'' },
-    { id:34, title:'Couples massage',                           category:'wellness', notes:'No special occasion needed. Just do it.',                                                 link:'' },
-    { id:35, title:'Sound bath meditation',                     category:'wellness', notes:'MNDFL, Inscape, or local yoga studios often host them. Very calming and a little weird.', link:'' },
-    { id:36, title:'Float therapy',                             category:'wellness', notes:'Sensory deprivation tank at Lift/Next Float — sounds intense, incredibly relaxing.',      link:'' },
-    // daytrip
-    { id:37, title:'Impromptu train to upstate NY',             category:'daytrip',  notes:'Hudson or Beacon — hop on Metro-North with no plan. A gallery, or just walking.',        link:'' },
-    { id:38, title:'Day trip to Connecticut',                   category:'daytrip',  notes:"New Haven for Sally's Apizza? Or a coastal town like Mystic or Essex.",                  link:'' },
-    { id:39, title:'Catskills for a day hike',                  category:'daytrip',  notes:'Rent a Zipcar. Slide Mountain or Kaaterskill Falls — beautiful and not too hard.',       link:'' },
-    { id:40, title:'Asbury Park, NJ',                           category:'daytrip',  notes:'NJ Transit from Penn Station. Great food scene, music venues, and a fun boardwalk.',     link:'' },
-    // free
-    { id:41, title:'Free museum day',                           category:'free',     notes:'MoMA is free Fri 5–9pm. Brooklyn Museum first Saturday of the month.',                   link:'' },
-    { id:42, title:'Catch a free outdoor event',                category:'free',     notes:'Bryant Park movies, Shakespeare in the Park, SummerStage, Celebrate Brooklyn!',          link:'' },
-    { id:43, title:'Sneak into a hotel rooftop bar',            category:'free',     notes:'Walk in with confidence. Williamsburg Hotel, 1 Hotels, Pod 39...',                       link:'' },
-    { id:44, title:'Picnic in Prospect Park',                   category:'free',     notes:'Grab stuff from a nearby deli or bakery, find a good spot, do absolutely nothing.',      link:'' },
-    { id:45, title:'Brooklyn Botanic Garden',                   category:'free',     notes:'Free on select weekdays. Cherry blossom season in April is genuinely magical.',          link:'' },
-    { id:46, title:'Visit the Panorama of NYC at Queens Museum', category:'free',    notes:'A 1:1200 scale model of the entire city. Surprisingly fascinating.',                     link:'' },
-    // classes
-    { id:47, title:'Take a drawing class together',             category:'classes',  notes:'Look for a drop-in session — relaxed and fun, not too serious.',                         link:'' },
-    { id:48, title:'Learn ASL together',                        category:'classes',  notes:'Find a beginner workshop or evening class.',                                              link:'' },
-    { id:49, title:'Pottery or ceramics class',                 category:'classes',  notes:'Lots of studios in Brooklyn offer beginner classes. Ghost optional.',                    link:'' },
-    { id:50, title:'Take a dance class',                        category:'classes',  notes:'Salsa, swing, or something totally random. Neither of us needs to be good at it.',        link:'' },
+    // ── cinema ──
+    { id:1,  title:'A Screenslate deep dive',                   category:'cinema',   season:'any',    notes:'Pick a director. Watch two of their films at different indie theaters in one day. Use it as an excuse to wander between neighborhoods.' },
+    { id:2,  title:'Nitehawk Cinema',                           category:'cinema',   season:'any',    notes:'Dine-in theater in Williamsburg or Prospect Park. Order the grilled cheese during the previews. Pick something neither of us has heard of.',     link:'' },
+    { id:3,  title:'Metrograph late Saturday',                  category:'cinema',   season:'any',    notes:'See the late screening. Have a drink at the bar downstairs after. Stay too long.',                                                               link:'' },
+    { id:4,  title:'IFC Center: pick blindly',                  category:'cinema',   season:'any',    notes:'A foreign film neither of us has researched. No reading reviews first. Just go.',                                                                link:'' },
+    { id:5,  title:'BAM Rose Cinemas',                          category:'cinema',   season:'any',    notes:'Brooklyn Academy of Music. Catch whatever cult classic or retrospective they have running. Beautiful old building.',                              link:'' },
+    { id:6,  title:'Anthology Film Archives',                   category:'cinema',   season:'any',    notes:'Genuinely weird, avant-garde programming in the East Village. The most "cinema" cinema in the city.',                                            link:'' },
+    // ── food ──
+    { id:7,  title:'Joe\'s Shanghai in Flushing',               category:'food',     season:'any',    notes:'The crab & pork xiao long bao. Not the Manhattan location — the Flushing one. Make a whole afternoon of the neighborhood.',                      link:'' },
+    { id:8,  title:'Olive Garden endless pasta',                category:'food',     season:'any',    notes:'The point is the breadsticks. Also the soup. Also the pasta. No shame whatsoever.',                                                              link:'' },
+    { id:9,  title:'Lilia in Williamsburg',                     category:'food',     season:'any',    notes:'The mafaldini with pink peppercorns. Book on Resy weeks ahead. It is worth it every single time.',                                               link:'' },
+    { id:10, title:'Xi\'an Famous Foods on St. Marks',          category:'food',     season:'any',    notes:'Spicy cumin lamb hand-ripped noodles, eaten standing up at the counter. Get there before the lunch rush.',                                       link:'' },
+    { id:11, title:'Lucali in Carroll Gardens',                 category:'food',     season:'any',    notes:'BYO wine. No reservations. Get there at 5pm and put your name in. The wait is part of it. The pizza is perfect.',                                link:'' },
+    { id:12, title:'Peter Luger Steak House',                   category:'food',     season:'any',    notes:'Cash only. Porterhouse for two. Order the steak sauce even if you think you won\'t use it. You will.',                                           link:'' },
+    { id:13, title:'Russ & Daughters Cafe',                     category:'food',     season:'any',    notes:'The Classic board. A Dr. Brown\'s cream soda. Read the walls. This place has been here since 1914.',                                             link:'' },
+    // ── bakeries ──
+    { id:14, title:'Breads Bakery chocolate babka',             category:'bakery',   season:'any',    notes:'Union Square location. Get there before noon. It sells out. The best babka in New York, and that\'s saying something.',                          link:'' },
+    { id:15, title:'Saturday pastry crawl through Cobble Hill', category:'bakery',   season:'any',    notes:'Start at Bien Cuit, get a croissant, then just walk. Let the neighborhood decide what\'s next.',                                                link:'' },
+    { id:16, title:'Dominique Ansel Bakery',                    category:'bakery',   season:'any',    notes:'Whatever seasonal thing they\'re doing this month will be worth it. The DKA is always on the menu. Go early.',                                   link:'' },
+    { id:17, title:'Balthazar Bakery baguette walk',            category:'bakery',   season:'spring', notes:'Buy a baguette and an almond croissant. Eat them while walking around SoHo. Very European of you.',                                              link:'' },
+    { id:18, title:'Mah Ze Dahr',                               category:'bakery',   season:'any',    notes:'The tahini cookie and a cortado. West Village. Small, warm, perfect.',                                                                           link:'' },
+    // ── shows ──
+    { id:19, title:'Broadway day-of',                           category:'shows',    season:'any',    notes:'Show up at the TKTS booth in Times Square at noon. Pick whatever has the best deal that looks interesting. No overthinking.',                    link:'https://www.tdf.org/nyc/7/TKTS-ticket-booths' },
+    { id:20, title:'Off-Broadway: Playwrights Horizons',        category:'shows',    season:'any',    notes:'More interesting than most of what\'s on Broadway. Newer work, smaller stages, weirder ideas. Check what\'s running.',                           link:'' },
+    { id:21, title:'The Comedy Cellar on a Tuesday',            category:'shows',    season:'any',    notes:'Quieter crowd, more surprising lineup. Famous for drop-ins who don\'t announce themselves. MacDougal St institution.',                            link:'' },
+    { id:22, title:'Village Vanguard on a Sunday',              category:'shows',    season:'any',    notes:'The most legendary jazz club in the world. Arrive early. Order a drink. Stay for both sets. Talk very little.',                                   link:'' },
+    // ── arts ──
+    { id:23, title:'A show at Baby\'s All Right',               category:'arts',     season:'any',    notes:'The perfect medium-sized venue. Not too big, not too small. Check Resident Advisor for whoever\'s playing.',                                     link:'https://ra.co/events/us/newyork' },
+    { id:24, title:'MoMA PS1 on a Saturday',                    category:'arts',     season:'any',    notes:'No plan. Just wander. The building is a converted school. The programming is always stranger and better than expected.',                          link:'' },
+    { id:25, title:'The Met: pick one wing only',               category:'arts',     season:'any',    notes:'Don\'t try to do all of it. Pick one floor, one period, one thing you\'re genuinely curious about. Pay what you wish.',                          link:'' },
+    { id:26, title:'Whitney Museum',                            category:'arts',     season:'any',    notes:'American art and those incredible Hudson River views from the upper floors. Check what rotating show they have.',                                  link:'' },
+    { id:27, title:'Nuyorican Poets Cafe Friday slam',          category:'arts',     season:'any',    notes:'East Village. Buy tickets in advance. Very alive, very New York. Nothing like it anywhere else.',                                                 link:'' },
+    // ── explore ──
+    { id:28, title:'Get off at a random stop',                  category:'explore',  season:'any',    notes:'Pick a neighborhood we\'ve never walked. Get off. Walk for two hours with no destination. This is always the best day.',                          link:'' },
+    { id:29, title:'Governors Island on a weekend',             category:'explore',  season:'summer', notes:'Free ferry from Lower Manhattan. Rent bikes. Bring snacks. No itinerary. Come back on the last ferry.',                                           link:'' },
+    { id:30, title:'Walk the High Line end to end',             category:'explore',  season:'spring', notes:'Start at 34th St and walk all the way south. Stop for tacos at Los Tacos No. 1 at the bottom. Very satisfying.',                                 link:'' },
+    { id:31, title:'A full day in Flushing',                    category:'explore',  season:'any',    notes:'Korean spa in the morning. Dim sum for lunch somewhere off the main drag. Bubble tea. Walk around the night market.',                             link:'' },
+    { id:32, title:'The Cloisters',                             category:'explore',  season:'fall',   notes:'A train to the very end of Washington Heights. Medieval art suspended above the Hudson. Spend three hours. Slow all the way down.',               link:'' },
+    // ── wellness ──
+    { id:33, title:'Russian & Turkish Baths, East Village',     category:'wellness', season:'winter', notes:'The full platza treatment. Bring a towel, go back and forth between rooms, spend at least 3 hours. Cash only.',                                  link:'' },
+    { id:34, title:'Aire Ancient Baths in Tribeca',             category:'wellness', season:'any',    notes:'The aromatherapy bath. Do not rush. Book ahead. Leave your phone in the locker and mean it.',                                                     link:'' },
+    { id:35, title:'Sound bath at MNDFL',                       category:'wellness', season:'winter', notes:'Try to actually stay awake. Some people can\'t. That\'s also fine. You\'ll feel strange and calm after.',                                         link:'' },
+    { id:36, title:'Float therapy',                             category:'wellness', season:'any',    notes:'One hour alone in a dark saltwater tank at Lift/Next Float. Sounds strange. Is strange. Then it\'s amazing.',                                     link:'' },
+    // ── day trips ──
+    { id:37, title:'Hudson, NY for the day',                    category:'daytrip',  season:'fall',   notes:'Metro-North from Penn Station. Walk Warren St gallery by gallery. Eat somewhere good. Be back before dark.',                                      link:'' },
+    { id:38, title:'Beacon + Dia: Beacon',                      category:'daytrip',  season:'any',    notes:'Metro-North from Grand Central. Spend the afternoon at Dia. Walk back through town. One of the best day trips from the city.',                    link:'' },
+    { id:39, title:'Catskills hike',                            category:'daytrip',  season:'fall',   notes:'Zipcar. Kaaterskill Falls or Slide Mountain — neither is too hard. Stop at a diner on the way back. Go for the foliage in October.',              link:'' },
+    { id:40, title:'Asbury Park, NJ',                           category:'daytrip',  season:'summer', notes:'NJ Transit from Penn Station. Walk the boardwalk. Eat somewhere good. Live music on weekends. Easier than it sounds to get to.',                  link:'' },
+    // ── free ──
+    { id:41, title:'MoMA Friday night',                         category:'free',     season:'any',    notes:'Free admission 5–9pm on Fridays. Get there at 4:30 before the crowd. It\'s genuinely the best way to see MoMA.',                                 link:'' },
+    { id:42, title:'Shakespeare in the Park',                   category:'free',     season:'summer', notes:'Get to Delacorte Theater at 7am for same-day tickets. Bring coffee and breakfast. It\'s worth the early morning, every time.',                    link:'' },
+    { id:43, title:'SummerStage in Central Park',               category:'free',     season:'summer', notes:'Check the calendar in June. Free concerts — genuinely great lineups every summer. Bring a blanket.',                                              link:'' },
+    { id:44, title:'Hotel rooftop crash',                       category:'free',     season:'summer', notes:'Walk into the Williamsburg Hotel, 1 Hotels Brooklyn Bridge, or Pod 39 like you belong there. Order one drink. Enjoy the view.',                   link:'' },
+    { id:45, title:'A full Sunday in Prospect Park',            category:'free',     season:'spring', notes:'Morning walk. Afternoon nap in the grass. Nowhere to be. No plans. This is the whole point.',                                                     link:'' },
+    { id:46, title:'Brooklyn Botanic Garden in April',          category:'free',     season:'spring', notes:'Cherry blossom season. Go on a weekday if you can. It\'s free some days — check the calendar. It\'s genuinely magical.',                          link:'' },
+    // ── classes ──
+    { id:47, title:'Drop-in life drawing class',                category:'classes',  season:'any',    notes:'Art Students League or a similar drop-in studio. No experience needed. Surprisingly meditative. You don\'t have to share what you made.',         link:'' },
+    { id:48, title:'Beginner ASL workshop',                     category:'classes',  season:'any',    notes:'Two-hour intro session. Check Eventbrite or local community boards. A genuinely useful skill. Also just interesting.',                             link:'' },
+    { id:49, title:'Pottery class at Choplet',                  category:'classes',  season:'any',    notes:'Beginner wheel throwing in Williamsburg. You will make something lopsided and love it. Bring a change of clothes.',                                link:'' },
+    { id:50, title:'Dance class: salsa or swing',               category:'classes',  season:'any',    notes:'La Boom for salsa, Swing 46 for swing. Neither of us needs to be good at it. That\'s the whole point.',                                           link:'' },
   ];
 
   // ── STATE ────────────────────────────────────────
@@ -782,7 +824,7 @@
   let catFilter  = 'all';
   let editingId  = null;
   let pickedCat  = 'food';
-  const KEY = 'nyc-adv-v3';
+  const KEY = 'nyc-adv-v4';
 
   function load() {
     const raw = localStorage.getItem(KEY);
@@ -800,14 +842,12 @@
 
     document.getElementById('centerNum').textContent = done;
     document.getElementById('statsRow').innerHTML =
-      `<span><b>${total}</b> total</span>
+      `<span><b>${total}</b> adventures</span>
        <span><b>${done}</b> done</span>
        <span><b>${todo}</b> to go</span>`;
 
-    const leftPanel = document.querySelector('.left-panel');
-    const pw = leftPanel.offsetWidth;
-    const ph = leftPanel.offsetHeight;
-    const size = Math.min(pw - 80, ph * 0.60, 480);
+    const lp   = document.querySelector('.left-panel');
+    const size = Math.min(lp.offsetWidth - 80, lp.offsetHeight * 0.58, 480);
 
     const wrap = document.getElementById('wheelWrap');
     wrap.style.width  = size + 'px';
@@ -817,47 +857,41 @@
 
     const cx = size / 2, cy = size / 2;
     const r  = size * 0.375;
-    const centerSize = size * 0.24;
-    const nodeSize   = size * 0.17;
+    const cs = size * 0.22;
+    const ns = size * 0.165;
 
     const center = document.getElementById('wheelCenter');
-    center.style.width  = centerSize + 'px';
-    center.style.height = centerSize + 'px';
-    document.getElementById('centerNum').style.fontSize   = (centerSize * 0.38) + 'px';
-    document.getElementById('centerLabel').style.fontSize = (centerSize * 0.14) + 'px';
+    center.style.width  = cs + 'px';
+    center.style.height = cs + 'px';
+    document.getElementById('centerNum').style.fontSize   = (cs * 0.4) + 'px';
+    document.getElementById('centerLabel').style.fontSize = (cs * 0.13) + 'px';
 
     const svg = document.getElementById('wheelSvg');
     svg.innerHTML = '';
 
-    const keys = Object.keys(CATS);
-    keys.forEach((key, i) => {
+    Object.keys(CATS).forEach((key, i) => {
       const cat   = CATS[key];
-      const angle = (i * (360 / keys.length) - 90) * Math.PI / 180;
+      const angle = (i * 36 - 90) * Math.PI / 180;
       const nx    = cx + r * Math.cos(angle);
       const ny    = cy + r * Math.sin(angle);
 
       // Spoke
-      const cr = centerSize / 2 + 2, nr = nodeSize / 2 + 2;
       const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', cx + cr * Math.cos(angle));
-      line.setAttribute('y1', cy + cr * Math.sin(angle));
-      line.setAttribute('x2', nx - nr * Math.cos(angle));
-      line.setAttribute('y2', ny - nr * Math.sin(angle));
-      line.setAttribute('stroke', '#D0BFAA');
+      line.setAttribute('x1', cx + (cs/2 + 2) * Math.cos(angle));
+      line.setAttribute('y1', cy + (cs/2 + 2) * Math.sin(angle));
+      line.setAttribute('x2', nx - (ns/2 + 2) * Math.cos(angle));
+      line.setAttribute('y2', ny - (ns/2 + 2) * Math.sin(angle));
+      line.setAttribute('stroke', 'rgba(160,130,80,0.25)');
       line.setAttribute('stroke-width', '1');
-      line.setAttribute('stroke-dasharray', '2 4');
+      line.setAttribute('stroke-dasharray', '2 5');
       svg.appendChild(line);
 
       // Node
+      const isActive = currentCat === key;
       const node = document.createElement('div');
-      node.className = 'wheel-node' + (currentCat === key ? ' active' : '');
-      node.style.cssText = `
-        left:${nx}px; top:${ny}px;
-        width:${nodeSize}px; height:${nodeSize}px;
-        --node-color:${cat.color};
-        border-top-color:${cat.color};
-      `;
-      node.innerHTML = `<div class="node-name" style="font-size:${nodeSize * 0.17}px; color:${currentCat === key ? cat.color : ''}">${cat.label}</div>`;
+      node.className = 'wheel-node' + (isActive ? ' active' : '');
+      node.style.cssText = `left:${nx}px; top:${ny}px; width:${ns}px; height:${ns}px;`;
+      node.innerHTML = `<div class="node-name" style="font-size:${ns * 0.185}px">${cat.label}</div>`;
       node.onclick = () => showCat(key);
       wrap.appendChild(node);
     });
@@ -873,7 +907,7 @@
     document.getElementById('placeholder').style.display = 'none';
     document.getElementById('catView').classList.add('visible');
     renderCatView();
-    renderWheel(); // re-render to highlight active node
+    renderWheel();
   }
 
   function renderCatView() {
@@ -882,8 +916,7 @@
     const todo     = catItems.filter(a => a.status === 'todo').length;
     const done     = catItems.filter(a => a.status === 'done').length;
 
-    document.getElementById('catTitle').innerHTML =
-      `<span style="font-family:'Playfair Display',serif; font-size:2rem; font-weight:600; color:${cat.color}">${cat.label}</span>`;
+    document.getElementById('catTitle').textContent    = cat.label;
     document.getElementById('catSubtitle').textContent = `${todo} to do · ${done} done`;
     document.documentElement.style.setProperty('--node-color', cat.color);
 
@@ -893,12 +926,16 @@
     const list = document.getElementById('activityList');
     list.innerHTML = visible.length
       ? visible.map((a, i) => rowHTML(a, i * 25)).join('')
-      : `<div class="empty-row">Nothing here yet — add one above.</div>`;
+      : `<div class="empty-row">nothing here yet — add one above</div>`;
   }
 
   function rowHTML(a, delay) {
     const cat    = CATS[a.category] || CATS.food;
     const isDone = a.status === 'done';
+
+    const seasonBadge = (a.season && a.season !== 'any')
+      ? `<span class="season-tag" style="background:${SEASON_COLORS[a.season]}">${a.season}</span>`
+      : '';
 
     const stars = isDone ? `<div class="stars-row">${
       [1,2,3,4,5].map(n =>
@@ -913,20 +950,23 @@
            style="--node-color:${cat.color}; animation-delay:${delay}ms">
         <div class="status-dot" onclick="toggleDone(${a.id})"></div>
         <div class="activity-body">
-          <div class="activity-title" onclick="toggleDone(${a.id})">${esc(a.title)}</div>
+          <div class="activity-top">
+            <div class="activity-title" onclick="toggleDone(${a.id})">${esc(a.title)}</div>
+            ${seasonBadge}
+          </div>
           ${a.notes ? `<div class="activity-notes">${esc(a.notes)}</div>` : ''}
           ${a.link  ? `<a href="${esc(a.link)}" target="_blank" rel="noopener" class="activity-link">&#8599; ${linkHost(a.link)}</a>` : ''}
           ${isDone  ? `<div class="activity-meta">${stars}${date}</div>` : ''}
         </div>
         <div class="activity-actions">
-          <button class="row-btn" onclick="openEdit(${a.id})" title="Edit">&#9998;</button>
-          <button class="row-btn del" onclick="del(${a.id})" title="Delete">&#10005;</button>
+          <button class="row-btn" onclick="openEdit(${a.id})">&#9998;</button>
+          <button class="row-btn del" onclick="del(${a.id})">&#10005;</button>
         </div>
       </div>`;
   }
 
   function linkHost(url) {
-    try { return new URL(url).hostname.replace('www.', ''); } catch { return 'link'; }
+    try { return new URL(url).hostname.replace('www.',''); } catch { return 'link'; }
   }
 
   function esc(s) {
@@ -948,8 +988,7 @@
       a.dateCompleted = null;
       a.rating = null;
     }
-    save();
-    renderWheel();
+    save(); renderWheel();
     if (currentCat) renderCatView();
   }
 
@@ -972,7 +1011,7 @@
       Object.entries(CATS).map(([key, cat]) => {
         const sel = pickedCat === key;
         return `<div class="cat-opt${sel?' sel':''}"
-                     style="${sel ? `background:${cat.color}; border-color:${cat.color};` : ''}"
+                     style="${sel ? `background:${cat.color};` : ''}"
                      onclick="pickCat('${key}')">${cat.label}</div>`;
       }).join('');
   }
@@ -982,10 +1021,11 @@
   function openAdd(cat) {
     editingId = null;
     pickedCat = cat || currentCat || 'food';
-    document.getElementById('formTitle').textContent = 'New Adventure';
-    document.getElementById('fTitle').value = '';
-    document.getElementById('fNotes').value = '';
-    document.getElementById('fLink').value  = '';
+    document.getElementById('formTitle').textContent = 'new adventure';
+    document.getElementById('fTitle').value  = '';
+    document.getElementById('fNotes').value  = '';
+    document.getElementById('fLink').value   = '';
+    document.getElementById('fSeason').value = 'any';
     buildCatPicker();
     document.getElementById('formOverlay').classList.remove('hidden');
     setTimeout(() => document.getElementById('fTitle').focus(), 120);
@@ -995,10 +1035,11 @@
     const a = items.find(x => x.id === id);
     if (!a) return;
     editingId = id; pickedCat = a.category;
-    document.getElementById('formTitle').textContent = 'Edit Adventure';
-    document.getElementById('fTitle').value = a.title;
-    document.getElementById('fNotes').value = a.notes || '';
-    document.getElementById('fLink').value  = a.link  || '';
+    document.getElementById('formTitle').textContent = 'edit adventure';
+    document.getElementById('fTitle').value  = a.title;
+    document.getElementById('fNotes').value  = a.notes  || '';
+    document.getElementById('fLink').value   = a.link   || '';
+    document.getElementById('fSeason').value = a.season || 'any';
     buildCatPicker();
     document.getElementById('formOverlay').classList.remove('hidden');
   }
@@ -1008,24 +1049,20 @@
   function saveItem() {
     const title = document.getElementById('fTitle').value.trim();
     if (!title) { document.getElementById('fTitle').focus(); return; }
+    const payload = {
+      title, category: pickedCat,
+      notes:  document.getElementById('fNotes').value.trim(),
+      link:   document.getElementById('fLink').value.trim(),
+      season: document.getElementById('fSeason').value,
+    };
     if (editingId) {
-      Object.assign(items.find(x => x.id === editingId), {
-        title, category: pickedCat,
-        notes: document.getElementById('fNotes').value.trim(),
-        link:  document.getElementById('fLink').value.trim(),
-      });
+      Object.assign(items.find(x => x.id === editingId), payload);
     } else {
-      items.push({
-        id: Date.now(), title, category: pickedCat,
-        notes: document.getElementById('fNotes').value.trim(),
-        link:  document.getElementById('fLink').value.trim(),
-        status: 'todo', dateCompleted: null, rating: null,
-      });
+      items.push({ id: Date.now(), ...payload, status:'todo', dateCompleted:null, rating:null });
     }
     save(); closeModal('formOverlay');
     renderWheel();
-    if (currentCat === pickedCat) renderCatView();
-    else showCat(pickedCat);
+    if (currentCat === pickedCat) renderCatView(); else showCat(pickedCat);
   }
 
   // ── SURPRISE ME ──────────────────────────────────
@@ -1034,21 +1071,21 @@
     if (!pool.length) { alert("You've done everything! Add more adventures."); return; }
     const pick = pool[Math.floor(Math.random() * pool.length)];
     const cat  = CATS[pick.category] || CATS.food;
-    document.getElementById('sCat').textContent  = cat.label;
-    document.getElementById('sCat').style.background = cat.color;
-    document.getElementById('sTitle').textContent = pick.title;
-    document.getElementById('sNotes').textContent = pick.notes || '';
+    document.getElementById('sCat').textContent       = cat.label;
+    document.getElementById('sCat').style.background  = cat.color;
+    document.getElementById('sTitle').textContent     = pick.title;
+    document.getElementById('sNotes').textContent     = pick.notes || '';
     document.getElementById('surpriseOverlay').classList.remove('hidden');
   }
 
   // ── CONFETTI ─────────────────────────────────────
   function confetti() {
     const layer  = document.getElementById('confetti-layer');
-    const colors = ['#9A6848','#924840','#A87A58','#6A6090','#885878','#4E7A60','#9A8048','#487890'];
-    for (let i = 0; i < 70; i++) {
+    const colors = Object.values(CATS).map(c => c.color);
+    for (let i = 0; i < 60; i++) {
       const el = document.createElement('div');
       el.className = 'cf';
-      const s = Math.random() * 8 + 4;
+      const s = Math.random() * 7 + 4;
       el.style.cssText = `
         left:${Math.random()*100}vw; top:-10px;
         width:${s}px; height:${s}px;
