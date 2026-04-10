@@ -798,8 +798,7 @@
         <div class="activity-top">
           <div class="activity-title" onclick="toggleDone(${a.id})">${esc(a.title)}</div>${badge}
         </div>
-        ${a.notes ? `<div class="activity-notes">${esc(a.notes)}</div>` : ''}
-        ${a.tip   ? `<div class="activity-tip">${esc(a.tip)}</div>` : ''}
+        ${(a.notes || a.tip) ? `<div class="activity-notes">${esc([a.notes, a.tip].filter(Boolean).join(' '))}</div>` : ''}
         ${a.link  ? `<a href="${esc(a.link)}" target="_blank" rel="noopener" class="activity-link">&#8599; ${linkHost(a.link)}</a>` : ''}
         ${isDone  ? `<div class="activity-meta">${stars}${date}</div>` : ''}
       </div>
