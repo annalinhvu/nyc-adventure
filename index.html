@@ -669,6 +669,18 @@
     { id:68, title:'Beginner ASL intro workshop',                category:'classes',  season:'any',    notes:'A 2-hour intro class. A genuinely useful skill that\'s also just really interesting to try together.', tip:'Check Eventbrite for weekend intro sessions, typically ~$30–50. ASL classes also run at the Center for Deaf and Hard of Hearing in White Plains, accessible by Metro-North.' },
     { id:69, title:'Wheel throwing pottery class at Choplet',    category:'classes',  season:'any',    notes:'Beginner wheel throwing in Williamsburg. You will make something lopsided. You will love it.', tip:'108 N 7th St, Williamsburg. ~$70–85 for a 2-hr session. Book at choplet.com. They fire your piece after and you pick it up a few weeks later, plan accordingly.' },
     { id:70, title:'Beginner salsa or swing dance class',        category:'classes',  season:'any',    notes:'Neither of us needs to be good. That\'s the whole point. One lesson leads to social dancing the same night.', tip:'Swing 46 (349 W 46th St): beginner lesson at 8pm before the social dancing, ~$20. For salsa: Sandra Cameron Dance Center (10 E 17th St) or Stepping Out Studios.' },
+    // ── more free ────────────────────────────────────────────────────
+    { id:71, title:'Walk the Brooklyn Bridge into DUMBO',        category:'free',     season:'any',    notes:'One of the most satisfying walks in the city. Finish in DUMBO and get a slice at Grimaldi\'s or poke around the waterfront.', tip:'Start at City Hall station (4/5/6) on the Manhattan side. Walk takes about 30 min. Go early on weekend mornings before the tourist crowds arrive. The DUMBO waterfront park is right at the far end.' },
+    { id:72, title:'Smorgasburg on a weekend morning',           category:'free',     season:'summer', notes:'Free to walk in, you just pay for what you eat. The best food market in the city. Every vendor is worth trying.', tip:'Saturdays in Williamsburg (East River State Park) and Sundays in Prospect Park (Breeze Hill). Open May through October. Get there before noon for the best selection. Budget ~$10–15 per dish.' },
+    { id:73, title:'The Rose Main Reading Room at NYPL',         category:'free',     season:'any',    notes:'One of the most beautiful rooms in New York. Bring a book or nothing at all. Just sit in it for an hour.', tip:'New York Public Library, 5th Ave and 42nd St. Free, open Mon–Sat. The grand staircase entrance faces 5th Ave. Quiet is expected. Bryant Park is right behind it.' },
+    { id:74, title:'Bushwick Collective street art walk',        category:'free',     season:'any',    notes:'Several blocks of rotating murals in East Bushwick, some of the best street art in the country. Worth at least two hours of wandering.', tip:'J/M/Z to Myrtle-Broadway or L to Jefferson St. Concentrate on Jefferson St and St. Nicholas Ave. Best on a weekend afternoon when artists are sometimes still at work.' },
+    { id:75, title:'Free outdoor yoga in the park',              category:'free',     season:'summer', notes:'Free yoga classes run all summer in parks across the city. No mat required, no experience expected.', tip:'Bryant Park hosts free yoga on Tuesday and Thursday evenings. Lululemon runs free classes on the Central Park Great Lawn. Check each park\'s summer calendar. June through August.' },
+    { id:76, title:'Wave Hill in the Bronx',                     category:'free',     season:'spring', notes:'A public garden overlooking the Hudson and the Palisades in Riverdale. Genuinely peaceful, genuinely beautiful.', tip:'Free on weekday mornings and Saturday mornings before noon. Metro-North to Riverdale (~30 min from Grand Central) or the BX10 bus. Gardens are best in late April and May.' },
+    // ── more classes ─────────────────────────────────────────────────
+    { id:77, title:'Beginner improv class at Magnet Theater',    category:'classes',  season:'any',    notes:'A two-hour intro class where you learn the basics and do scenes with strangers. More fun than it sounds. Less terrifying than it sounds.', tip:'Magnet Theater, 254 W 29th St. Intro workshops run regularly, ~$30–40. Book at magnettheater.com. UCB also runs drop-in improv classes, check their schedule.' },
+    { id:78, title:'Fresh pasta making class',                   category:'classes',  season:'any',    notes:'Make pasta from scratch and eat everything at the end. A hands-on, satisfying afternoon that feels like an actual accomplishment.', tip:'Eataly (200 5th Ave) and ICE (225 Liberty St) both run pasta classes. Airbnb Experiences has smaller, more intimate options. ~$75–120/person. Book 1–2 weeks ahead.' },
+    { id:79, title:'Cocktail making workshop',                   category:'classes',  season:'any',    notes:'Two hours mixing and drinking three cocktails you made yourself. A genuinely fun date format.', tip:'Cocktail Kingdom (23 W 39th St) and The Eddy (96 Ave C) both run workshops. Airbnb Experiences also has good options. ~$60–90/person. Small groups, book in advance.' },
+    { id:80, title:'Flower arranging workshop',                  category:'classes',  season:'spring', notes:'A 2-hour hands-on class. You leave with an arrangement you made yourself. Surprisingly meditative.', tip:'Saipua (100 Ferris St, Red Hook) and Le Fanfare run regular workshops. Airbnb Experiences has pop-up options too. ~$65–100/person. Spring is the best season for interesting blooms.' },
   ];
 
   // ── STATE ────────────────────────────────────────
@@ -677,8 +689,16 @@
 
   function load() {
     const raw = localStorage.getItem(KEY);
-    items = raw ? JSON.parse(raw) : SEED.map(s => ({ ...s, status:'todo', dateCompleted:null, rating:null }));
-    if (!raw) save();
+    if (!raw) {
+      items = SEED.map(s => ({ ...s, status:'todo', dateCompleted:null, rating:null }));
+    } else {
+      const stored = JSON.parse(raw);
+      const storedIds = new Set(stored.map(x => x.id));
+      const newItems = SEED.filter(s => !storedIds.has(s.id))
+        .map(s => ({ ...s, status:'todo', dateCompleted:null, rating:null }));
+      items = [...stored, ...newItems];
+    }
+    save();
   }
 
   function save() { localStorage.setItem(KEY, JSON.stringify(items)); }
