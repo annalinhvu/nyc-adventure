@@ -48,6 +48,16 @@
       text-align: center; margin-bottom: 0.75rem; width: 100%;
     }
 
+    .back-link {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--l-muted); text-decoration: none;
+      margin-bottom: 0.75rem;
+      transition: color .15s;
+    }
+    .back-link:hover { color: var(--l-text); }
+
     .eyebrow {
       display: block;
       font-size: 0.68rem; font-weight: 500;
@@ -547,6 +557,7 @@
     <!-- ── LEFT PANEL ──────────────────────────────── -->
     <div class="left-panel">
       <header>
+        <a class="back-link" href="https://annalinhvu.github.io">← annalinhvu.github.io</a>
         <span class="eyebrow">a journal of things to do</span>
         <h1>our nyc adventure log</h1>
         <div class="stats-row" id="statsRow"></div>
