@@ -49,11 +49,10 @@
     }
 
     .back-link {
-      display: inline-block;
+      position: fixed; top: 14px; left: 16px; z-index: 999;
       font-size: 0.65rem; font-weight: 500;
       letter-spacing: 0.08em; text-transform: uppercase;
       color: var(--l-muted); text-decoration: none;
-      margin-bottom: 0.75rem;
       transition: color .15s;
     }
     .back-link:hover { color: var(--l-text); }
@@ -551,13 +550,13 @@
   </style>
 </head>
 <body>
+  <a class="back-link" href="https://annalinhvu.github.io">← portfolio</a>
   <div id="confetti-layer"></div>
 
   <div class="app">
     <!-- ── LEFT PANEL ──────────────────────────────── -->
     <div class="left-panel">
       <header>
-        <a class="back-link" href="https://annalinhvu.github.io">← annalinhvu.github.io</a>
         <span class="eyebrow">a journal of things to do</span>
         <h1>our nyc adventure log</h1>
         <div class="stats-row" id="statsRow"></div>
